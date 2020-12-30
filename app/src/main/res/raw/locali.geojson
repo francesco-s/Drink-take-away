@@ -1,0 +1,13 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {"type":"Feature", "geometry":{ "type":"Point", "coordinates":[7.6955659, 45.0646803]}, "properties":{"name":"Jumping Jester", "type":"pub", "address": "Via Roma, 102", "city":"Torino"}},
+    {"type":"Feature","geometry":{ "type":"Point", "coordinates":[7.6944488, 45.0655545]}, "properties":{"name":"Clorophilla", "type":"BelLocale", "address": "Piazza Vittorio Veneto, 17", "city":"Torino"}},
+    {"type":"Feature","geometry":{ "type":"Point", "coordinates":[7.659841, 45.071133]}, "properties":{"name":"Irish Pub", "type":"Pub", "address": "Viale Nizza, 38", "city":"Torino"}},
+    {"type":"Feature","geometry":{ "type":"Point", "coordinates":[7.6943166, 45.0643651]}, "properties":{"name":"La Rhumerie 18", "type":"Cocktail Bar", "address": "Via Maria Vittoria, 49", "city":"Torino"}},
+    {"type":"Feature","geometry":{ "type":"Point", "coordinates":[7.6891726, 45.0650854]}, "properties":{"name":"L'alchimista", "type":"Cocktail Bar", "address": "Via delle Rosine, 10", "city":"Torino"}},
+    {"type":"Feature","geometry":{ "type":"Point", "coordinates":[7.6948529, 45.0643833]}, "properties":{"name":"Soho.23", "type":"Cocktail Bar", "address": "Piazza Vittorio Veneto, 23F", "city":"Torino"}},
+    {"type":"Feature","geometry":{ "type":"Point", "coordinates":[7.6930938, 45.0642776 ]}, "properties":{"name":"La Drogheria", "type":"Cocktail Bar", "address": "Piazza Vittorio Veneto, 18/D", "city":"Torino"}},
+    {"type":"Feature","geometry":{ "type":"Point", "coordinates":[7.6926851, 45.06377]}, "properties":{"name":"Al Bona", "type":"Cocktail Bar", "address": "Via Alfonso Bonafus, 2", "city":"Torino"}}
+      ]
+}

@@ -1,0 +1,53 @@
+{
+  "markers": [
+    {
+      "name": "Jumping Jester",
+      "type": "Pub",
+      "address": "Via Roma, 102",
+      "lat": 45.0646803,
+      "lon": 7.6955659
+    },
+    {
+      "name": "Clorophilla",
+      "type": "Cocktail Bar",
+      "address": "Piazza Vittorio Veneto, 17",
+      "lat": 45.0655545,
+      "lon": 7.6944488
+    },
+    {
+      "name": "La Rhumerie 18",
+      "type": "Cocktail Bar",
+      "address": "Via Maria Vittoria, 49",
+      "lat": 45.0643651,
+      "lon": 7.6943166
+    },
+    {
+      "name": "L'alchimista",
+      "type": "Cocktail Bar",
+      "address": "Via delle Rosine, 10",
+      "lat": 45.0650854,
+      "lon": 7.6891726
+    },
+    {
+      "name": "Soho.23",
+      "type": "Cocktail Bar",
+      "address": "Piazza Vittorio Veneto, 23F",
+      "lat": 45.0643833,
+      "lon": 7.6948529
+    },
+    {
+      "name": "La Drogheria",
+      "type": "Cocktail Bar",
+      "address": "Piazza Vittorio Veneto, 18/D",
+      "lat": 45.0642776,
+      "lon": 7.6930938
+    },
+    {
+      "name": "Al Bona",
+      "type": "Cocktail Bar",
+      "address": "Via Alfonso Bonafus, 2",
+      "lat": 45.06377,
+      "lon": 7.6926851
+    }
+  ]
+}
