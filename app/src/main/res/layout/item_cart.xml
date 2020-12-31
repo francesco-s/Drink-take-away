@@ -9,14 +9,14 @@
     >
 
     <TextView
-        android:id="@+id/drink_name"
+        android:id="@+id/drink_name_cart"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         />
 
     <TextView
-        android:id="@+id/drink_price"
+        android:id="@+id/drink_price_cart"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -24,12 +24,12 @@
 
 
     <Button
-        android:id="@+id/add_button"
+        android:id="@+id/minus_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:textSize="35sp"
-        android:text="+"
+        android:text="-"
         />
 </LinearLayout>

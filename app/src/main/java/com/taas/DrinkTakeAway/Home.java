@@ -163,7 +163,6 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
         switch (item.getItemId()) {
             case R.id.cart: {
                 Toast.makeText(context, "Hai cliccato  cart", Toast.LENGTH_SHORT).show();
-
                 Intent intent = new Intent(context, ShoppingCart.class);
                 bundle.putSerializable("ordine", ordine);
                 intent.putExtras(bundle);
@@ -176,7 +175,6 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        int a =32;
         switch (item.getItemId()){
             case R.id.menuInfoC:{
                 Toast.makeText(context, "Hai cliccato info cliente", Toast.LENGTH_SHORT).show();
