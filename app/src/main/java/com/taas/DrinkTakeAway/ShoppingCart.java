@@ -32,11 +32,12 @@ public class ShoppingCart extends AppCompatActivity implements CartAdapter.onDri
         Intent intent = this.getIntent();
         Bundle bundle = intent.getExtras();
 
-        ordine=(ArrayList<EntryOrdine> )bundle.getSerializable("ordine");
+        ordine=(ArrayList<EntryOrdine> )bundle.getSerializable("order");
 
         adapter = new CartAdapter(ordine, (CartAdapter.onDrinkListenerCart) this);
         rvBevandeCart.setAdapter(adapter);
         rvBevandeCart.setLayoutManager(new LinearLayoutManager(this));
+
     }
 
     @Override
@@ -44,5 +45,22 @@ public class ShoppingCart extends AppCompatActivity implements CartAdapter.onDri
         ordine.remove(pos);
         adapter = new CartAdapter(ordine, (CartAdapter.onDrinkListenerCart) context);
         rvBevandeCart.setAdapter(adapter);
+    }
+
+
+    @Override
+    public void onBackPressed() {
+
+        Toast.makeText(getApplicationContext(), "local name: . drink name:",
+                Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent();
+        Bundle bundle = new Bundle();
+
+        bundle.putSerializable("order", ordine);
+        intent.putExtras(bundle);
+
+        setResult(RESULT_OK, intent);
+        finish();
+        super.onBackPressed();
     }
 }

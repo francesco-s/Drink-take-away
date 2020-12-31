@@ -163,14 +163,31 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
         switch (item.getItemId()) {
             case R.id.cart: {
                 Toast.makeText(context, "Hai cliccato  cart", Toast.LENGTH_SHORT).show();
+
                 Intent intent = new Intent(context, ShoppingCart.class);
-                bundle.putSerializable("ordine", ordine);
+                bundle.putSerializable("order", ordine);
+
                 intent.putExtras(bundle);
-                startActivity(intent);
+                startActivityForResult(intent, 1);
+                //startActivity(intent);
             }
         }
         return true;
+    }
 
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 1) {
+            if(resultCode == RESULT_OK) {
+                //Intent intent = this.getIntent();
+                Bundle bundle = data.getExtras();
+
+                ArrayList<EntryOrdine> newOrder=(ArrayList<EntryOrdine> )bundle.getSerializable("order");
+
+                ordine = newOrder;
+            }
+        }
     }
 
     @Override
@@ -264,6 +281,9 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
         mQueue.add(request);
 
     }
+
+
+
 
     public String setWelcomeText(String defaultName)
     {
