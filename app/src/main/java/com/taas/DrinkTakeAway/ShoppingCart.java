@@ -107,10 +107,10 @@ public class ShoppingCart extends AppCompatActivity implements CartAdapter.onDri
             if(resultCode == Activity.RESULT_OK)
             {
                 Log.i("msg", "Payment successful");
+
             }
             else
             {
-                Toast.makeText(this, "Payment failed", Toast.LENGTH_LONG).show();
                 Log.i("msg", "Payment failed");
             }
         }
