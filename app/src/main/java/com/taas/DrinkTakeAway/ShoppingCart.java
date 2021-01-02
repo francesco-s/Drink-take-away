@@ -41,8 +41,14 @@ public class ShoppingCart extends AppCompatActivity implements CartAdapter.onDri
     }
 
     @Override
-    public void onMinusButtonClickGetDrink(String name, String price, int pos) {
-        ordine.remove(pos);
+    public void onMinusButtonClickGetDrink(String name, String price, String numerosity, int pos) {
+        if (Integer.parseInt(numerosity) == 1){
+            ordine.remove(pos);
+        }
+        else{
+            EntryOrdine eo = ordine.get(pos);
+            eo.decreaseNum();
+        }
         adapter = new CartAdapter(ordine, (CartAdapter.onDrinkListenerCart) context);
         rvBevandeCart.setAdapter(adapter);
     }

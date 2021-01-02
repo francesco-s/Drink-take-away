@@ -55,12 +55,9 @@ public class LoginActivity extends AppCompatActivity {
     GoogleSignInClient mGoogleSignInClient;
     LoginButton facebookLoginButton;
 
-
     Context context=this;
 
     int RC_SIGN_IN = 9001;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +81,7 @@ public class LoginActivity extends AppCompatActivity {
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
-        SignInButton signInButton = findViewById(R.id.sign_in_button);
+        SignInButton signInButton = findViewById(R.id.google_sign_in_button);
         signInButton.setSize(SignInButton.SIZE_STANDARD);
 
 
@@ -102,7 +99,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void facebookInit(){
 
-        facebookLoginButton = (LoginButton) findViewById(R.id.login_button);
+        facebookLoginButton = (LoginButton) findViewById(R.id.facebook_sin_in_button);
         facebookLoginButton.setReadPermissions(Arrays.asList("public_profile,email,user_friends,user_birthday"));
 
         facebookCallbackManager = CallbackManager.Factory.create();
@@ -125,7 +122,6 @@ public class LoginActivity extends AppCompatActivity {
                                     System.out.println("Questo è il email"+object.getString("email"));
 
                                     String idToken = AccessToken.getCurrentAccessToken().getToken();
-
                                     sendIDToken(facebookAuthUrl, idToken);
 
                                 } catch (JSONException e) {
@@ -179,7 +175,16 @@ public class LoginActivity extends AppCompatActivity {
 
         AccessToken facebookAccessToken = AccessToken.getCurrentAccessToken();
 
-        boolean isLoggedIn = facebookAccessToken != null && !facebookAccessToken.isExpired();
+        boolean isLoggedInFacebook = facebookAccessToken != null && !facebookAccessToken.isExpired();
+        boolean isLoggedInGoogle = googleAccount != null && !googleAccount.isExpired();
+
+        if (isLoggedInGoogle)
+            sendIDToken(googleAuthUrl, googleAccount.getIdToken());
+        else if (isLoggedInFacebook)
+                sendIDToken(facebookAuthUrl, facebookAccessToken.getToken());
+
+        //Intent intent = new Intent(context, MapsActivity.class);
+        //startActivity(intent);
 
         //LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile"));
 
@@ -190,7 +195,7 @@ public class LoginActivity extends AppCompatActivity {
     public void onClick2(View view) {
         Log.d(TAG, "onClick started");
         switch (view.getId()) {
-            case R.id.sign_in_button:
+            case R.id.google_sign_in_button:
                 googleSignIn();
                 break;
         }
@@ -251,10 +256,9 @@ public class LoginActivity extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(), "This is my Toast message!",
                                     Toast.LENGTH_LONG).show();
 
-                            Intent intent = new Intent(context, MapsActivity.class);
-                            //intent.putExtra("name", localName);
-                            startActivity(intent);
 
+                            Intent intent = new Intent(context, MapsActivity.class);
+                            startActivity(intent);
 
                         } catch (JSONException e) {
                             e.printStackTrace();

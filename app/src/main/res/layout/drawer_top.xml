@@ -40,14 +40,14 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Codice cliente"
+            android:text="email"
             android:textSize="12dp"
             android:layout_marginRight="15dp"
 
             android:textColor="#FFF"
 
             android:paddingBottom="4dp"
-            android:id="@+id/textViewMenuTopCodCliente" />
+            android:id="@+id/textViewMenuTopEmail" />
     </LinearLayout>
 
 

@@ -58,6 +58,9 @@ public class CartAdapter extends
         TextView textView1 = holder.priceTextView;
         textView1.setText(String.valueOf(entryOrdine.getPrice()) + " €");
 
+        TextView textViewNum = holder.numerosityTextView;
+        textViewNum.setText(String.valueOf(entryOrdine.getNumerosity()));
+
         Button button = holder.minusButton;
 
         //button.setText(contact.isOnline() ? "Message" : "Offline");
@@ -70,7 +73,7 @@ public class CartAdapter extends
     public class ViewHolder extends RecyclerView.ViewHolder{
         // Your holder should contain a member variable
         // for any view that will be set as you render a row
-        public TextView nameTextView, priceTextView;
+        public TextView nameTextView, priceTextView, numerosityTextView;
         public Button minusButton;
         CartAdapter.onDrinkListenerCart mOnDrinkListenerCart;
 
@@ -85,6 +88,8 @@ public class CartAdapter extends
 
             nameTextView = (TextView) itemView.findViewById(R.id.drink_name_cart);
             priceTextView = (TextView) itemView.findViewById(R.id.drink_price_cart);
+            numerosityTextView = (TextView) itemView.findViewById(R.id.drink_numerosity);
+
             minusButton = (Button) itemView.findViewById(R.id.minus_button);
 
             this.mOnDrinkListenerCart = onDrinkListenerCart;
@@ -92,7 +97,7 @@ public class CartAdapter extends
             minusButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mOnDrinkListenerCart.onMinusButtonClickGetDrink(nameTextView.getText().toString(), priceTextView.getText().toString(), getAdapterPosition());
+                    mOnDrinkListenerCart.onMinusButtonClickGetDrink(nameTextView.getText().toString(), priceTextView.getText().toString(), numerosityTextView.getText().toString() ,getAdapterPosition());
                 }
             });
 
@@ -110,6 +115,6 @@ public class CartAdapter extends
 
     public interface onDrinkListenerCart{
         //void onDrinkClickGetName (String name);
-        void onMinusButtonClickGetDrink(String name, String price, int pos);
+        void onMinusButtonClickGetDrink(String name, String price, String numerosity, int pos);
     }
 }
