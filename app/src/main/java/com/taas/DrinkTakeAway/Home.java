@@ -38,6 +38,7 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
 
     private RequestQueue mQueue;
     private String localName;
+    private String localIpAdress;
 
     ArrayList<Menu> menus;
     ArrayList<EntryOrdine> ordine;
@@ -58,6 +59,7 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
         final Button cocktail = findViewById(R.id.cocktail);
         final Button allDrink = findViewById(R.id.all);
         rvBevande = (RecyclerView) findViewById(R.id.recyclermenu);
+        localIpAdress = "192.168.1.157";
 
         context =this;
         VolleyCallback callback = null;
@@ -197,7 +199,7 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
 
 
     public void InitJsonParsing (final VolleyCallback callback){
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, "http://192.168.1.90:1111/api/v1/menu?nameLocale=" + localName, null, new Response.Listener<JSONArray>() {
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, "http://"+ localIpAdress +":1111/api/v1/menu?nameLocale=" + localName, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 callback.onSuccess(response);
@@ -287,16 +289,16 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
         switch (buttonName)
         {
             case "All":
-                url = "http://192.168.1.90:1111/api/v1/menu?nameLocale=" + localName;
+                url = "http://"+ localIpAdress +":1111/api/v1/menu?nameLocale=" + localName;
                 break;
             case "Beers":
-                url = "http://192.168.1.90:1111/api/v1/specificdrinktype?nameLocale=" + localName + "&typeBevanda=beer";
+                url = "http://"+ localIpAdress +":1111/api/v1/specificdrinktype?nameLocale=" + localName + "&typeBevanda=beer";
                 break;
             case "Wines":
-                url = "http://192.168.1.90:1111/api/v1/specificdrinktype?nameLocale=" + localName + "&typeBevanda=wine";
+                url = "http://"+ localIpAdress +":1111/api/v1/specificdrinktype?nameLocale=" + localName + "&typeBevanda=wine";
                 break;
             case "Cocktails":
-                url = "http://192.168.1.90:1111/api/v1/specificdrinktype?nameLocale=" + localName + "&typeBevanda=cocktail";
+                url = "http://"+ localIpAdress +":1111/api/v1/specificdrinktype?nameLocale=" + localName + "&typeBevanda=cocktail";
                 break;
         }   //FINE SWITCH
 

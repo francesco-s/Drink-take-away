@@ -177,7 +177,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             //mMap.addMarker(new MarkerOptions().position(pos).title("Name: " + m.getName() + "\nType: " + m.getType() + "\nAddress: " + m.getAddress()));
             mMap.addMarker(new MarkerOptions().position(pos).title(m.getName())
                     .icon(bitmapDescriptorFromVector(getApplicationContext(), setCustomIcon(type))));
-            mMap.animateCamera(CameraUpdateFactory.zoomTo(17.0f));
+
+            //SETTING FOCUS TO CITY CENTER
+            float zoomLevel = 15.0f;
+            LatLng mapCenter;
+            //Mole Antonelliana 45.0690113  7.6910275
+            //Porta Nuova/San Salvario 45.062055    7.6763373
+            //Piazza Vittorio Veneto
+            double latCenter = 45.0647992, lngCenter = 7.6930788;
+            mapCenter = new LatLng(latCenter, lngCenter);
+            mMap.moveCamera((CameraUpdateFactory.newLatLngZoom(mapCenter, zoomLevel)));
             //mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(pos, 17.0f));
             mMap.moveCamera(CameraUpdateFactory.newLatLng(pos));
 

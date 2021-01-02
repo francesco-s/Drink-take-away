@@ -72,6 +72,7 @@ public class CartAdapter extends
         // for any view that will be set as you render a row
         public TextView nameTextView, priceTextView;
         public Button minusButton;
+        public Button plusButton;
         CartAdapter.onDrinkListenerCart mOnDrinkListenerCart;
 
 
@@ -86,6 +87,8 @@ public class CartAdapter extends
             nameTextView = (TextView) itemView.findViewById(R.id.drink_name_cart);
             priceTextView = (TextView) itemView.findViewById(R.id.drink_price_cart);
             minusButton = (Button) itemView.findViewById(R.id.minus_button);
+            //plusButton = itemView.findViewById(R.id.plus_button);
+
 
             this.mOnDrinkListenerCart = onDrinkListenerCart;
 
