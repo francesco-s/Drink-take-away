@@ -1,7 +1,6 @@
 package com.taas.DrinkTakeAway.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,22 +11,19 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.taas.DrinkTakeAway.R;
-import com.taas.DrinkTakeAway.models.EntryOrdine;
-import com.taas.DrinkTakeAway.models.Menu;
+import com.taas.DrinkTakeAway.models.CartEntry;
 
 import java.util.List;
-
-import static android.content.ContentValues.TAG;
 
 public class CartAdapter extends
         RecyclerView.Adapter<CartAdapter.ViewHolder> {
 
     private CartAdapter.onDrinkListenerCart mOnDrinkListenerCart;
-    private List<EntryOrdine> mEntryOrdine;
+    private List<CartEntry> mCartEntry;
 
     // Pass in the contact array into the constructor
-    public CartAdapter(List<EntryOrdine> ordine,  CartAdapter.onDrinkListenerCart mOnDrinkListenerCart) {
-        mEntryOrdine = ordine;
+    public CartAdapter(List<CartEntry> ordine,  CartAdapter.onDrinkListenerCart mOnDrinkListenerCart) {
+        mCartEntry = ordine;
         this.mOnDrinkListenerCart = mOnDrinkListenerCart;
 
     }
@@ -49,17 +45,17 @@ public class CartAdapter extends
     @Override
     public void onBindViewHolder(CartAdapter.ViewHolder holder, int position) {
         // Get the data model based on position
-        EntryOrdine entryOrdine = mEntryOrdine.get(position);
+        CartEntry CartEntry = mCartEntry.get(position);
         // Set item views based on your views and data model
 
         TextView textView = holder.nameTextView;
-        textView.setText(entryOrdine.getDrinkName());
+        textView.setText(CartEntry.getDrinkName());
 
         TextView textView1 = holder.priceTextView;
-        textView1.setText(String.valueOf(entryOrdine.getPrice()) + " €");
+        textView1.setText(String.valueOf(CartEntry.getPrice()) + " €");
 
         TextView textViewNum = holder.numerosityTextView;
-        textViewNum.setText(String.valueOf(entryOrdine.getNumerosity()));
+        textViewNum.setText(String.valueOf(CartEntry.getNumerosity()));
 
         Button button = holder.minusButton;
 
@@ -109,7 +105,7 @@ public class CartAdapter extends
     // Returns the total count of items in the list
     @Override
     public int getItemCount() {
-        return mEntryOrdine.size();
+        return mCartEntry.size();
     }
 
 

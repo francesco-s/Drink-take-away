@@ -38,7 +38,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Picasso;
 import com.taas.DrinkTakeAway.adapter.DrinkAdapter;
 import com.taas.DrinkTakeAway.models.Bevanda;
-import com.taas.DrinkTakeAway.models.EntryOrdine;
+import com.taas.DrinkTakeAway.models.CartEntry;
 import com.taas.DrinkTakeAway.models.Locale;
 import com.taas.DrinkTakeAway.models.Menu;
 
@@ -54,14 +54,22 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
     private String localName;
 
     ArrayList<Menu> menus;
-    ArrayList<EntryOrdine> ordine;
+    ArrayList<CartEntry> ordine;
     RecyclerView rvBevande;
     Context context;
     NavigationView nw;
 
     TextView textCartItemCount;
+    TextView textViewMenuTopUtente;
+    TextView textViewMenuTopEmail;
+
+
     int mCartItemCount;
 
+    String localId;
+
+    GoogleSignInAccount googleAccount;
+    AccessToken facebookAccessToken;
     boolean isLoggedInFacebook, isLoggedInGoogle;
 
     Bundle bundle;
@@ -79,6 +87,7 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
         final Button allDrink = findViewById(R.id.all);
         rvBevande = (RecyclerView) findViewById(R.id.recyclermenu);
 
+
         context =this;
         VolleyCallback callback = null;
 
@@ -94,14 +103,14 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
         nw.setNavigationItemSelectedListener(this);
 
         View innerview=nw.getHeaderView(0);
-        TextView textViewMenuTopUtente=(TextView) innerview.findViewById(R.id.textViewMenuTopUtente);
-        TextView textViewMenuTopEmail=(TextView) innerview.findViewById(R.id.textViewMenuTopEmail);
+        textViewMenuTopUtente=(TextView) innerview.findViewById(R.id.textViewMenuTopUtente);
+        textViewMenuTopEmail=(TextView) innerview.findViewById(R.id.textViewMenuTopEmail);
         ImageView userImage = (ImageView) innerview.findViewById(R.id.imageView);
 
 
         //Check Facebook or Google user info
-        GoogleSignInAccount googleAccount = GoogleSignIn.getLastSignedInAccount(this);
-        AccessToken facebookAccessToken = AccessToken.getCurrentAccessToken();
+        googleAccount = GoogleSignIn.getLastSignedInAccount(this);
+        facebookAccessToken = AccessToken.getCurrentAccessToken();
 
         isLoggedInFacebook = facebookAccessToken != null && !facebookAccessToken.isExpired();
         isLoggedInGoogle = googleAccount != null && !googleAccount.isExpired();
@@ -194,8 +203,9 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
                         JSONObject r  = response.getJSONObject(i);
                         String drinkName = r.getJSONObject("bevanda").getString("name");
                         String drinkType = r.getJSONObject("bevanda").getString("type");
+                        String drinkID = r.getJSONObject("id").getString("id_bevanda");
 
-                        String localId = r.getJSONObject("locale").getString("id");
+                        localId = r.getJSONObject("id").getString("id_locale");
                         String localName = r.getJSONObject("locale").getString("name");
                         String localAddress = r.getJSONObject("locale").getString("address");
                         String localType = r.getJSONObject("locale").getString("type");
@@ -203,7 +213,7 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
                         String localLon = r.getJSONObject("locale").getString("lon");
                         float price =(float) r.getLong("price");
 
-                        Bevanda bevandaAtt = new Bevanda(drinkName, drinkType);
+                        Bevanda bevandaAtt = new Bevanda(drinkID, drinkName, drinkType);
                         Locale localeAtt = new Locale(localName, localAddress, localType, localLat, localLon);
 
                         menus.add(new Menu(localeAtt, bevandaAtt, price));
@@ -218,7 +228,9 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
             }
         });
 
+
         rvBevande.setLayoutManager(new LinearLayoutManager(this));
+
     }
 
 
@@ -271,10 +283,11 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
 
                 Intent intent = new Intent(context, ShoppingCart.class);
                 bundle.putSerializable("order", ordine);
+                bundle.putSerializable("localID", localId);
+                bundle.putSerializable("userEmail", textViewMenuTopEmail.getText().toString());
 
                 intent.putExtras(bundle);
                 startActivityForResult(intent, 1);
-                //startActivity(intent);
             }
         }
         return super.onOptionsItemSelected(item);
@@ -287,12 +300,12 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
             if(resultCode == RESULT_OK) {
                 Bundle bundle = data.getExtras();
 
-                ArrayList<EntryOrdine> newOrder=(ArrayList<EntryOrdine> )bundle.getSerializable("order");
+                ArrayList<CartEntry> newOrder=(ArrayList<CartEntry> )bundle.getSerializable("order");
 
                 ordine = newOrder;
                 mCartItemCount =0;
 
-                for (EntryOrdine eo: ordine) {
+                for (CartEntry eo: ordine) {
                     mCartItemCount += eo.getNumerosity();
                 }
                 setupBadge();
@@ -369,8 +382,10 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
                         JSONObject r  = response.getJSONObject(i);
                         String drinkName = r.getJSONObject("bevanda").getString("name");
                         String drinkType = r.getJSONObject("bevanda").getString("type");
+                        String drinkID = r.getJSONObject("id").getString("id_bevanda");
 
-                        String localName = r.getJSONObject("locale").getString("name");
+
+                        String localName = r.getJSONObject("id").getString("id_locale");
                         String localAddress = r.getJSONObject("locale").getString("name");
                         String localType = r.getJSONObject("locale").getString("name");
                         String localLat = r.getJSONObject("locale").getString("name");
@@ -378,7 +393,7 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
 
                         float price =(float) r.getLong("price");
 
-                        Bevanda bevandaAtt = new Bevanda(drinkName, drinkType);
+                        Bevanda bevandaAtt = new Bevanda(drinkID, drinkName, drinkType);
                         Locale localeAtt = new Locale(localName, localAddress, localType, localLat, localLon);
 
                         menus.add(new Menu(localeAtt, bevandaAtt, price));
@@ -457,19 +472,18 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
     }
 
     @Override
-    public void onAddButtonClickGetDrink(String name, String price) {
-        Toast.makeText(getApplicationContext(), "local name: "+ localName + ". drink name: "+ name + ". price: "+ price,
-                Toast.LENGTH_SHORT).show();
+    public void onAddButtonClickGetDrink(String drinkID, String drinkName, String drinkPrice) {
+
         boolean checkExists = false;
 
-        for (EntryOrdine eo: ordine) {
-            if (eo.getDrinkName().equals(name) && eo.getLocalName().equals(localName)){
+        for (CartEntry eo: ordine) {
+            if (eo.getDrinkName().equals(drinkName) && eo.getLocalName().equals(localName)){
                 eo.increaseNum();
                 checkExists = true;
             }
         }
         if (!checkExists)
-            ordine.add(new EntryOrdine(localName, name, Float.parseFloat(price.replaceAll("€",""))));
+            ordine.add(new CartEntry(drinkID, localName, drinkName, Float.parseFloat(drinkPrice.replaceAll("€",""))));
 
         mCartItemCount++;
         setupBadge();

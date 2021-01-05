@@ -56,6 +56,9 @@ public class DrinkAdapter extends
         TextView textView1 = holder.priceTextView;
         textView1.setText(String.valueOf(menu.getPrice()) + " €");
 
+        TextView textViewHiddenID = holder.drinkIDTextView;
+        textViewHiddenID.setText(menu.getBevanda().getId());
+
         Button button = holder.addButton;
 
         //button.setText(contact.isOnline() ? "Message" : "Offline");
@@ -68,7 +71,7 @@ public class DrinkAdapter extends
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         // Your holder should contain a member variable
         // for any view that will be set as you render a row
-        public TextView nameTextView, priceTextView;
+        public TextView nameTextView, priceTextView, drinkIDTextView;
         public Button addButton;
         onDrinkListener mOnDrinkListener;
 
@@ -82,13 +85,14 @@ public class DrinkAdapter extends
             nameTextView = (TextView) itemView.findViewById(R.id.drink_name);
             priceTextView = (TextView) itemView.findViewById(R.id.drink_price);
             addButton = (Button) itemView.findViewById(R.id.add_button);
+            drinkIDTextView = (TextView) itemView.findViewById(R.id.drink_id);
             this.mOnDrinkListener = mOnDrinkListener;
 
 
             addButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mOnDrinkListener.onAddButtonClickGetDrink(nameTextView.getText().toString(), priceTextView.getText().toString());
+                    mOnDrinkListener.onAddButtonClickGetDrink(drinkIDTextView.getText().toString(), nameTextView.getText().toString(), priceTextView.getText().toString());
                 }
             });
 
@@ -114,6 +118,6 @@ public class DrinkAdapter extends
     public interface onDrinkListener{
         void onDrinkClick(int pos);
         void onDrinkClickGetName (String name);
-        void onAddButtonClickGetDrink(String name, String price);
+        void onAddButtonClickGetDrink(String id, String name, String price);
     }
 }

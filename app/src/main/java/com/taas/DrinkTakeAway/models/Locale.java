@@ -55,4 +55,14 @@ public class Locale {
         this.type = type;
     }
 
+    @Override
+    public String toString() {
+        return "Locale{" +
+                "name='" + name + '\'' +
+                ", address='" + address + '\'' +
+                ", type='" + type + '\'' +
+                ", lat='" + lat + '\'' +
+                ", lon='" + lon + '\'' +
+                '}';
+    }
 }
