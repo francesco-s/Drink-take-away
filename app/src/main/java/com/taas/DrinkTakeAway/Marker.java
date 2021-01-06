@@ -2,20 +2,30 @@ package com.taas.DrinkTakeAway;
 
 public class Marker {
 
-    //NAME, TYPE, ADDRESS, LATITUDE, LONGITUDE
+    //ID, NAME, TYPE, ADDRESS, LATITUDE, LONGITUDE
+    private int id;
     private String name;
     private String type;
     private String address;
     private double lat;
     private double lon;
 
-    public Marker(String name, String type, String address, double lat, double lon)
+    public Marker(int id, String name, String type, String address, double lat, double lon)
     {
+        this.id = id;
         this.name = name;
         this.type = type;
         this.address = address;
         this.lat = lat;
         this.lon = lon;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
