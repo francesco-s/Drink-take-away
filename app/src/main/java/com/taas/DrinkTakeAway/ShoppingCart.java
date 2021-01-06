@@ -17,12 +17,12 @@ import android.widget.Toast;
 
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
-import com.paypal.android.sdk.payments.PayPalConfiguration;
-import com.paypal.android.sdk.payments.PayPalPayment;
-import com.paypal.android.sdk.payments.PayPalService;
+import com.paypal.android.sdk.payments.*;
+import com.paypal.android.sdk.payments.PaymentActivity;
 import com.taas.DrinkTakeAway.adapter.CartAdapter;
 import com.taas.DrinkTakeAway.adapter.DrinkAdapter;
 import com.taas.DrinkTakeAway.models.EntryOrdine;
+import org.json.JSONException;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -33,14 +33,15 @@ public class ShoppingCart extends AppCompatActivity implements CartAdapter.onDri
     ArrayList<EntryOrdine> ordine;
     Context context;
     CartAdapter adapter;
+    float amount;
 
     private int PAYPAL_REQ_CODE = 12;
     //public static final String PAYPAL_CLIENT_ID = "Aav06doww9oKl6daarVYc2Uzvlm5w_FpkWS_Uh4QWCLT3Y3X3J5EWSoXJUJMBJkqrd-tnlYZ2SpBfJcQ";
     private static PayPalConfiguration paypalConfig = new PayPalConfiguration()
             .environment(PayPalConfiguration.ENVIRONMENT_SANDBOX)
             .clientId(PayPalClientIDConfig.PAYPAL_CLIENT_ID);
-    //SI USA ENVIRONMENT SANDBOX IN QUANTO STIAMO FACENDO DEI TEST (TEST PURPOSES ONLY)
-    //SI USA ENVIRONMENT PRODUCTION QUANDO INVECE L'APP E' PRONTA PER LA RELEASE
+    //WE USE ENVIRONMENT SANDBOX, TEST PURPOSES ONLY
+    //ENVIRONMENT PRODUCTION IS USED WHEN THE APP IS READY FOR THE RELEASE
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,13 +54,13 @@ public class ShoppingCart extends AppCompatActivity implements CartAdapter.onDri
         Bundle bundle = intent.getExtras();
 
         ordine=(ArrayList<EntryOrdine>)bundle.getSerializable("ordine");
-        float totale = 0;
-        
+        float total = 0;
+
+        //
         for(int i=0;i<ordine.size();i++)
-        {
-            totale = totale + ordine.get(i).getPrice();
-        }
-        Log.i("totale", "il totale da passare è " + totale);
+        { total = total + ordine.get(i).getPrice(); }
+
+        Log.i("totale", "il totale da passare è " + total);
         
         adapter = new CartAdapter(ordine, (CartAdapter.onDrinkListenerCart) this);
         rvBevandeCart.setAdapter(adapter);
@@ -76,14 +77,15 @@ public class ShoppingCart extends AppCompatActivity implements CartAdapter.onDri
         payIntent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, paypalConfig);
         startService(payIntent);
 
-        float finalTotale = totale;
+        float finalTotal = total;
         pay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                payPalPaymentMethod(finalTotale);
+                payPalPaymentMethod(finalTotal);
+                amount = finalTotal;
             }
         });
-    }       //OnCreate Ends
+    }   //OnCreate Ends
 
     private void payPalPaymentMethod(float totale) {
 
@@ -106,14 +108,42 @@ public class ShoppingCart extends AppCompatActivity implements CartAdapter.onDri
         {
             if(resultCode == Activity.RESULT_OK)
             {
+                PaymentConfirmation confirmation = data.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);
+                if (confirmation!=null)
+                {
+                    try {
+                        String paymentDetails = confirmation.toJSONObject().toString(4);
+
+                        startActivity(new Intent(this, EndingPage.class)
+                                .putExtra("PaymentDetails", paymentDetails)
+                                .putExtra("PaymentAmount", amount)
+                        );  //startActivity method ends
+
+                    } catch (JSONException e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+
                 Log.i("msg", "Payment successful");
+                Log.i("msg", "Pagato" + amount);
+
+                /*
+                Intent myIntent = new Intent(this, EndingPage.class);
+                ShoppingCart.this.startActivity(myIntent);
+                 */
 
             }
-            else
+            else if (resultCode == Activity.RESULT_CANCELED)
             {
-                Log.i("msg", "Payment failed");
+                //Log.i("msg", "Payment failed");
+                Log.i("msg", "Cancel");
             }
         }
+        else if (resultCode == PaymentActivity.RESULT_EXTRAS_INVALID)
+            {
+                Log.i("msg", "Invalid");
+            }
     }
 
 

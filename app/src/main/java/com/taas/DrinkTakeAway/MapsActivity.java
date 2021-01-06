@@ -7,15 +7,23 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import android.widget.Toast;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -38,13 +46,13 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.InfoWindowAdapter, GoogleMap.OnMapClickListener {
 
     private GoogleMap mMap;
     private static final String EXTRA_TEXT = "com.taas.DrinkTakeAway.MapsActivity.EXTRA_TEXT";
 
     ArrayList<Marker> markers = new ArrayList<>();
-    int cont = 0;
+    private RequestQueue mQueue;
     private Button button;
 
     @Override
@@ -56,173 +64,129 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        mQueue = Volley.newRequestQueue(this);
 
         button = (Button) findViewById(R.id.menu_button);
         LinearLayout li = (LinearLayout) findViewById(R.id.bottom);
         li.setBackgroundColor(Color.parseColor("#fbb324"));
 
-        //LETTURA JSON
-        InputStream is = getResources().openRawResource(R.raw.marker);
-        Writer writer = new StringWriter();
-        char[] buffer = new char[1024];
-
-        try {
-            Reader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-
-            int n;
-            while((n = reader.read(buffer)) !=-1)
-            {
-                writer.write(buffer, 0, n);
-            } //FINE WHILE
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            is.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        String marker_array = writer.toString();
-
-        //FETCH JSON
-        try {
-
-            JSONObject json = new JSONObject(marker_array);
-            JSONArray jArray =  json.getJSONArray("markers");
-            for (int i = 0;i<jArray.length();i++)
-            {
-                JSONObject obj = jArray.getJSONObject(i);
-
-                Marker m = new Marker("name", "type", "address", 0.0, 0.1);
-                m.setName(obj.getString("name"));
-                m.setType(obj.getString("type"));
-                m.setAddress(obj.getString("address"));
-                m.setLat(obj.getDouble("lat"));
-                m.setLon(obj.getDouble("lon"));
-                markers.add(m);
-
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-    }
+    }       //OnCreate ends
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+
         mMap = googleMap;
 
-        String name, type, add;
-        LatLng pos;
-        double lat;
-        double lon;
+        /*
+         *READ JSON VIA URL
+         */
 
-        //CREAZIONE MARKER
-        for (Marker m: markers)
-        {
-            lat = m.getLat();
-            lon = m.getLon();
+        jsonParseLocali(new VolleyResponseListener() {
+            @Override
+            public void onError(String message) {
+                Log.i("list", "Something wrong");
+            }
 
-            type = m.getType();
+            @Override
+            public void onResponse(ArrayList<Marker> listOfMarker) {
 
-            if(mMap!=null)
-            {
-                mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+                String name, type, add;
+                LatLng pos;
+                double lat, lon;
+
+                //CREAZIONE MARKER
+                for(int i=0; i<listOfMarker.size();i++)
+                {
+                    lat = listOfMarker.get(i).getLat();
+                    lon = listOfMarker.get(i).getLon();
+                    type = listOfMarker.get(i).getType();
+
+                    pos = new LatLng(lat, lon);
+                    mMap.addMarker(new MarkerOptions().position(pos).title(listOfMarker.get(i).getName())
+                            .icon(bitmapDescriptorFromVector(getApplicationContext(), setCustomIcon(type))));
+
+                } //Creation markers loo ends
+                markers = listOfMarker;
+            }
+        });
+
+        mMap.setOnMarkerClickListener(this);
+        mMap.setInfoWindowAdapter(this);
+        mMap.setOnMapClickListener(this);
+        setMapCenter();
+
+    } //OnMapReady ends
+
+    //Setting interface for Callback
+    public interface VolleyResponseListener {
+        void onError(String message);
+
+        void onResponse(ArrayList<Marker> listOfMarker);
+    }
+
+    private void jsonParseLocali(final VolleyResponseListener listener)
+    {
+
+        //String url = "http://10.0.2.2:1111/api/v1/locale";
+        String url = "http://192.168.1.157:1111/api/v1/locale";
+        ArrayList<Marker> al = new ArrayList<>();
+
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONArray>() {
                     @Override
-                    public View getInfoWindow(com.google.android.gms.maps.model.Marker marker)
+                    public void onResponse(JSONArray response)
                     {
+                        try {
+                            LatLng pos;
+                            for(int i=0; i< response.length(); i++)
+                            {
+                                Marker m = new Marker(0,"name", "type", "address", 0.0, 0.0);
+                                JSONObject locale = response.getJSONObject(i);
 
-                        View row = getLayoutInflater().inflate(R.layout.custom_infowindow, null);
+                                //Setting the Marker class object
+                                m.setId(locale.getInt("id"));
+                                m.setName(locale.getString("name"));
+                                m.setAddress(locale.getString("address"));
+                                m.setType(locale.getString("type"));
+                                m.setLat(locale.getDouble("lat"));
+                                m.setLon(locale.getDouble("lon"));
+                                al.add(m);
+                            }
 
-                        //PRENDIAMO DAL LAYOUT LA TEXT VIEW CON ID ADDRESS
-                        TextView name = (TextView) row.findViewById(R.id.name);
-                        //PRENDIAMO DAL LAYOUT LA TEXT VIEW CON ID ADDRESS
-                        TextView address = (TextView) row.findViewById(R.id.address);
-                        //PRENDIAMO DAL LAYOUT LA TEXT VIEW CON ID CROWDING
-                        TextView crowding = (TextView) row.findViewById(R.id.crowding);
-
-                        //SETTING COLORI TESTO/INFOWINDOW
-                        String cName = markers.get(cont).getName() + " ";
-                        String cAdd = markers.get(cont).getAddress() + " ";
-                        String cCrow = "High/Medium/Low ";
-
-                        //ASSEGNAZIONE TESTO DA VISUALIZZARE
-                        name = setTextAndColor(name, cName, " Name");
-
-                        address = setTextAndColor(address, cAdd, " Address");
-
-                        setTextAndColor(crowding, cCrow, " Crowding");
-
-                        cont++;
-
-                        row.setBackgroundColor(Color.parseColor("#fbb324"));
-
-                        return row;
-
-                    }
-
-                    @Override
-                    public View getInfoContents(com.google.android.gms.maps.model.Marker marker) {
-
-                        return null;
-
-                    }  //FINE getInfoContent
-
-                }); //FINE setInfoWindowAdapter
-
-            }  //FINE IF
-
-            pos = new LatLng(lat, lon);
-            //mMap.addMarker(new MarkerOptions().position(pos).title("Name: " + m.getName() + "\nType: " + m.getType() + "\nAddress: " + m.getAddress()));
-            mMap.addMarker(new MarkerOptions().position(pos).title(m.getName())
-                    .icon(bitmapDescriptorFromVector(getApplicationContext(), setCustomIcon(type))));
-
-            //SETTING FOCUS TO CITY CENTER
-            float zoomLevel = 15.0f;
-            LatLng mapCenter;
-            //Mole Antonelliana 45.0690113  7.6910275
-            //Porta Nuova/San Salvario 45.062055    7.6763373
-            //Piazza Vittorio Veneto
-            double latCenter = 45.0647992, lngCenter = 7.6930788;
-            mapCenter = new LatLng(latCenter, lngCenter);
-            mMap.moveCamera((CameraUpdateFactory.newLatLngZoom(mapCenter, zoomLevel)));
-            //mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(pos, 17.0f));
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(pos));
-
-            mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                @Override
-                public boolean onMarkerClick(com.google.android.gms.maps.model.Marker marker) {
-
-
-                    TextView selectedMarker = (TextView) findViewById(R.id.local_name);
-                    selectedMarker.setText(markers.get(cont).getName());
-                    selectedMarker.setTextSize(TypedValue.COMPLEX_UNIT_SP, 22);
-                    selectedMarker.setTextColor(Color.parseColor("#000000"));
-
-                    final String localName = (String) selectedMarker.getText();
-
-                    button.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            openMenu(localName);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                    });
+                        //Setting the Callback listener
+                        listener.onResponse(al);
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+                listener.onError(error.toString());
+            }
+        });
 
-                    return false;
-                }
-            });
+        mQueue.add(request);
+    }    // jsonParseLocali method ends
 
-        } //FINE FOR CREAZIONE MARKER
-
-    } //FINE OnMapReady
+    //SETTING FOCUS TO CITY CENTER
+    private void setMapCenter() {
+        float zoomLevel = 16.0f;
+        LatLng mapCenter;
+        //Mole Antonelliana 45.0690113  7.6910275
+        //Porta Nuova/San Salvario 45.062055    7.6763373
+        //Piazza Vittorio Veneto
+        double latCenter = 45.0647992, lngCenter = 7.6930788;
+        mapCenter = new LatLng(latCenter, lngCenter);
+        mMap.moveCamera((CameraUpdateFactory.newLatLngZoom(mapCenter, zoomLevel)));
+    }
 
     //ANDIAMO A DEFINIRE LA PROCEDURA PER APRIRE IL MENU
     public void openMenu(String localName) {
         Intent intent = new Intent(this, Home.class);
         intent.putExtra("name", localName);
         startActivity(intent);
-
     }
 
     private BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId)
@@ -235,7 +199,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         vectorDrawable.draw(canvas);
 
         return BitmapDescriptorFactory.fromBitmap(bitmap);
-
     }
 
     public TextView setTextAndColor(TextView tv, String str, String att)
@@ -248,21 +211,83 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public int setCustomIcon(String type)
     {
-        int path = R.drawable.ic_cocktail;         //INIZIALIZZAZIONE PER NON AVERE ERRORI A RUNTIME
+        int path = R.drawable.ic_cocktail;         //It needs initialization to avoid runtime error
 
         switch (type)
         {
-            case "Pub":
+            case "pub":
                 path = R.drawable.ic_beer;
                 break;
-            case "Cocktail bar":
+            case "cocktail bar":
                 path = R.drawable.ic_cocktail;
                 break;
-            case "Wine Bar":
+            case "wine bar":
                 path = R.drawable.ic_wine;
                 break;
         }
         return path;
     }
 
+    @Override
+    public boolean onMarkerClick(com.google.android.gms.maps.model.Marker marker) {
+        TextView selectedMarkerLocalName = findViewById(R.id.local_name);
+
+        final String localName = marker.getTitle();
+        selectedMarkerLocalName.setText(localName);
+
+        TextView selectedMarker = (TextView) findViewById(R.id.local_name);
+
+        selectedMarker.setTextSize(TypedValue.COMPLEX_UNIT_SP, 22);
+        selectedMarker.setTextColor(Color.parseColor("#000000"));
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openMenu(localName);
+            }
+        });
+
+        return false;
+    }
+
+    @Override
+    public View getInfoWindow(com.google.android.gms.maps.model.Marker marker) {
+        String title = marker.getTitle();
+
+        View row = getLayoutInflater().inflate(R.layout.custom_infowindow, null);
+
+        for (int i=0;i<markers.size();i++)
+        {
+            if(title.equals(markers.get(i).getName()))
+            {
+
+                TextView name = (TextView) row.findViewById(R.id.name);
+                TextView address = (TextView) row.findViewById(R.id.address);
+                TextView crowding = (TextView) row.findViewById(R.id.crowding);
+
+                String cName = markers.get(i).getName() + " ";
+                String cAdd = markers.get(i).getAddress() + " ";
+                String cCrow = "High/Medium/Low ";
+
+
+                name = setTextAndColor(name, cName, " Name");
+                address = setTextAndColor(address, cAdd, " Address");
+                setTextAndColor(crowding, cCrow, " Crowding");
+
+                row.setBackgroundColor(Color.parseColor("#fbb324"));
+
+            }
+        }
+        return row;
+    }
+
+    @Override
+    public View getInfoContents(com.google.android.gms.maps.model.Marker marker) {
+        return null;
+    }
+
+    @Override
+    public void onMapClick(LatLng latLng) {
+        Toast.makeText(this, "Choose a marker on the map", Toast.LENGTH_LONG).show();
+    }
 }
