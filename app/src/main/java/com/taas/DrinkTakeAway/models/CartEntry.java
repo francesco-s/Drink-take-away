@@ -10,11 +10,11 @@ public class CartEntry implements Serializable {
     int numerosity;
     String drinkID;
 
-    public CartEntry(String drinkID, String localName, String drinkName, float price){
+    public CartEntry(String drinkID, String localName, String drinkName, int numerosity,  float price){
         this.localName=localName;
         this.drinkName =drinkName;
         this.price=price;
-        this.numerosity = 1;
+        this.numerosity = numerosity;
         this.drinkID = drinkID;
     }
 

@@ -62,8 +62,7 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
     TextView textCartItemCount;
     TextView textViewMenuTopUtente;
     TextView textViewMenuTopEmail;
-
-
+    
     int mCartItemCount;
 
     String localId;
@@ -81,10 +80,10 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
 
         mCartItemCount = 0;
 
-        final Button birre = findViewById(R.id.beer);
-        final Button vini = findViewById(R.id.wine);
-        final Button cocktail = findViewById(R.id.cocktail);
-        final Button allDrink = findViewById(R.id.all);
+        final Button beers = findViewById(R.id.beer);
+        final Button wines = findViewById(R.id.wine);
+        final Button cocktails = findViewById(R.id.cocktail);
+        final Button allDrinks = findViewById(R.id.all);
         rvBevande = (RecyclerView) findViewById(R.id.recyclermenu);
 
 
@@ -160,34 +159,34 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
             System.out.println(localName);
         }
 
-        birre.setOnClickListener(new View.OnClickListener() {
+        beers.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String n = birre.getText().toString();
+                String n = beers.getText().toString();
                 jsonParse(n);
             }
         });
 
-        vini.setOnClickListener(new View.OnClickListener() {
+        wines.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String n = vini.getText().toString();
+                String n = wines.getText().toString();
                 jsonParse(n);
             }
         });
 
-        cocktail.setOnClickListener(new View.OnClickListener() {
+        cocktails.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String n = cocktail.getText().toString();
+                String n = cocktails.getText().toString();
                 jsonParse(n);
             }
         });
 
-        allDrink.setOnClickListener(new View.OnClickListener() {
+        allDrinks.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String n = allDrink.getText().toString();
+                String n = allDrinks.getText().toString();
                 jsonParse(n);
             }
         });
@@ -321,6 +320,12 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
                 Toast.makeText(context, "Hai cliccato info cliente", Toast.LENGTH_SHORT).show();
                 return true;
             }
+            case R.id.menuOrderHistory:{
+                Intent intent = new Intent(this, OrdersHistory.class);
+                intent.putExtra("email", textViewMenuTopEmail.getText());
+                startActivity(intent);
+                return true;
+            }
             case R.id.menuSupport:{
                 Toast.makeText(context, "Contatta francescosannicola1997@gmail.com", Toast.LENGTH_SHORT).show();
                 return true;
@@ -367,8 +372,6 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
     private void jsonParse(String buttonName)
     {
         String url = setUrl(buttonName);
-        ArrayList<Bevanda> bev = new ArrayList<Bevanda>();
-
         menus.clear();
 
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
@@ -387,9 +390,9 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
 
                         String localName = r.getJSONObject("id").getString("id_locale");
                         String localAddress = r.getJSONObject("locale").getString("name");
-                        String localType = r.getJSONObject("locale").getString("name");
-                        String localLat = r.getJSONObject("locale").getString("name");
-                        String localLon = r.getJSONObject("locale").getString("name");
+                        String localType = r.getJSONObject("locale").getString("type");
+                        String localLat = r.getJSONObject("locale").getString("lat");
+                        String localLon = r.getJSONObject("locale").getString("lon");
 
                         float price =(float) r.getLong("price");
 
@@ -483,7 +486,7 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
             }
         }
         if (!checkExists)
-            ordine.add(new CartEntry(drinkID, localName, drinkName, Float.parseFloat(drinkPrice.replaceAll("€",""))));
+            ordine.add(new CartEntry(drinkID, localName, drinkName, 1, Float.parseFloat(drinkPrice.replaceAll("€",""))));
 
         mCartItemCount++;
         setupBadge();

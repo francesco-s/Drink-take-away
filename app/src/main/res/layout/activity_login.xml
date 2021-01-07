@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,22 +7,36 @@
     tools:context=".LoginActivity">
 
 
-    <com.google.android.gms.common.SignInButton
-        android:id="@+id/google_sign_in_button"
+    <TableLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="142dp"
-        tools:layout_editor_absoluteY="435dp"
-        android:visibility="visible"/>
+        >
 
-    <com.facebook.login.widget.LoginButton
-        android:id="@+id/facebook_sin_in_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        tools:ignore="MissingClass,MissingConstraints"
-        tools:layout_editor_absoluteX="117dp"
-        tools:layout_editor_absoluteY="352dp" />
+        <TableRow>
+            <com.google.android.gms.common.SignInButton
+                android:id="@+id/google_sign_in_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                tools:ignore="MissingConstraints"
+                tools:layout_editor_absoluteX="142dp"
+                tools:layout_editor_absoluteY="435dp" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        </TableRow>
+        <TableRow>
+            <com.facebook.login.widget.LoginButton
+                android:id="@+id/facebook_sin_in_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                tools:ignore="MissingClass,MissingConstraints"
+                tools:layout_editor_absoluteX="117dp"
+                tools:layout_editor_absoluteY="352dp" />
+        </TableRow>
+
+    </TableLayout>
+
+
+
+
+</RelativeLayout>

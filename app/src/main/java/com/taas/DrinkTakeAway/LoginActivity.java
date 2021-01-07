@@ -251,14 +251,16 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            VolleyLog.v("Response:%n %s", response.toString(4));
-
-                            Toast.makeText(getApplicationContext(), "This is my Toast message!",
+                            Intent intent;
+                            Toast.makeText(getApplicationContext(), "Login successful",
                                     Toast.LENGTH_LONG).show();
 
-
-                            Intent intent = new Intent(context, MapsActivity.class);
+                            if (response.get("role").equals("barista"))
+                                intent = new Intent(context, BartenderActivity.class);
+                            else
+                                intent = new Intent(context, MapsActivity.class);
                             startActivity(intent);
+
 
                         } catch (JSONException e) {
                             e.printStackTrace();

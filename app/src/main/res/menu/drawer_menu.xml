@@ -9,10 +9,17 @@
             android:title="Info cliente"
             android:icon="@mipmap/ic_info"/>
 
+
+        <item
+            android:id="@+id/menuOrderHistory"
+            android:checked="false"
+            android:title="Order history"
+            android:icon="@drawable/ic_baseline_history_24"/>
+
         <item
             android:id="@+id/menuSupport"
             android:checked="false"
-            android:title="Supporto"
+            android:title="Support"
             android:icon="@mipmap/ic_support"/>
 
         <item
