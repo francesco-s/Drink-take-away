@@ -6,9 +6,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.LinearLayout;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -28,7 +30,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class OrdersHistory extends AppCompatActivity implements HistoryOrderAdapter.onDrinkListenerCart{
 
@@ -40,6 +44,8 @@ public class OrdersHistory extends AppCompatActivity implements HistoryOrderAdap
 
     Context context;
     RecyclerView rvOrder;
+    String accessToken;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +60,9 @@ public class OrdersHistory extends AppCompatActivity implements HistoryOrderAdap
 
         if(getIntent() != null)
             email = getIntent().getStringExtra("email");
+
+        SharedPreferences preferences = OrdersHistory.this.getSharedPreferences("drink_take_away",Context.MODE_PRIVATE);
+        accessToken  = preferences.getString("token",null);
 
         getAllUserOrders(email);
     }
@@ -81,8 +90,6 @@ public class OrdersHistory extends AppCompatActivity implements HistoryOrderAdap
                         historyOrderEntryList.add(new HistoryOrderEntry(drinkId, localName, drinkName, numerosity, price, orderNumber, timestamp ));
 
                     }
-
-
                     //rvOrder.addItemDecoration(new DividerItemDecoration(context, LinearLayout.VERTICAL));
                     HistoryOrderAdapter adapter = new HistoryOrderAdapter(historyOrderEntryList, (HistoryOrderAdapter.onDrinkListenerCart) context);
                     // Attach the adapter to the recyclerview to populate items
@@ -98,14 +105,19 @@ public class OrdersHistory extends AppCompatActivity implements HistoryOrderAdap
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
             }
-        });
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + accessToken);
+                return headers;
+            }
+        };
 
         rvOrder.setLayoutManager(new LinearLayoutManager(this));
-
         mQueue.add(request);
 
     }
-
 
     @Override
     public void onMinusButtonClickGetDrink(String name, String price, String numerosity, int pos) {

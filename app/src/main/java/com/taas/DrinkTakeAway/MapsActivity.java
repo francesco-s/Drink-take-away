@@ -268,7 +268,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 String cName = markers.get(i).getName() + " ";
                 String cAdd = markers.get(i).getAddress() + " ";
-                String cCrow = "High/Medium/Low ";
+                String cCrow = "Low";
 
 
                 name = setTextAndColor(name, cName, " Name");

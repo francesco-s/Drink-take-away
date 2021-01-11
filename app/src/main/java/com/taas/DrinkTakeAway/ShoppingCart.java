@@ -8,11 +8,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -38,6 +40,8 @@ import org.json.JSONObject;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ShoppingCart extends AppCompatActivity implements CartAdapter.onDrinkListenerCart{
 
@@ -52,6 +56,9 @@ public class ShoppingCart extends AppCompatActivity implements CartAdapter.onDri
 
     String localID;
     String userEmail;
+
+    String accessToken;
+
 
     float amount;
     float total ;
@@ -88,8 +95,8 @@ public class ShoppingCart extends AppCompatActivity implements CartAdapter.onDri
         rvBevandeCart.setAdapter(adapter);
         rvBevandeCart.setLayoutManager(new LinearLayoutManager(this));
 
-
-
+        SharedPreferences preferences = ShoppingCart.this.getSharedPreferences("drink_take_away",Context.MODE_PRIVATE);
+        accessToken  = preferences.getString("token",null);//second parameter default value.
 
 
         total = 0;
@@ -99,9 +106,7 @@ public class ShoppingCart extends AppCompatActivity implements CartAdapter.onDri
 
 
         /*
-         *
          * PayPal payment section start
-         *
          */
 
         Intent payIntent = new Intent(this, PayPalService.class);
@@ -165,7 +170,7 @@ public class ShoppingCart extends AppCompatActivity implements CartAdapter.onDri
                 }
 
                 Log.i("msg", "Payment successful");
-                Log.i("msg", "Pagato" + amount);
+                Log.i("msg", "Payed: " + amount);
             }
             else if (resultCode == Activity.RESULT_CANCELED)
             {
@@ -208,7 +213,14 @@ public class ShoppingCart extends AppCompatActivity implements CartAdapter.onDri
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
             }
-        });
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + accessToken);
+                return headers;
+            }
+        };
         mQueue.add(request);
 
     }

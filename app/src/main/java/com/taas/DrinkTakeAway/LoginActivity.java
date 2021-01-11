@@ -2,8 +2,10 @@ package com.taas.DrinkTakeAway;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -254,6 +256,15 @@ public class LoginActivity extends AppCompatActivity {
                             Intent intent;
                             Toast.makeText(getApplicationContext(), "Login successful",
                                     Toast.LENGTH_LONG).show();
+
+                            //Save token here
+                            String token = response.get("token").toString();
+                            SharedPreferences preferences = LoginActivity.this.getSharedPreferences("drink_take_away",Context.MODE_PRIVATE);
+                            preferences.edit().putString("token",token).apply();
+
+
+
+
 
                             if (response.get("role").equals("barista"))
                                 intent = new Intent(context, BartenderActivity.class);

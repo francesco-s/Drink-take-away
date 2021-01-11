@@ -2,6 +2,7 @@ package com.taas.DrinkTakeAway;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -18,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -47,6 +49,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListener,  NavigationView.OnNavigationItemSelectedListener{
 
@@ -62,6 +66,8 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
     TextView textCartItemCount;
     TextView textViewMenuTopUtente;
     TextView textViewMenuTopEmail;
+
+    String apiServerIp = "http://192.168.1.90:1111/api/v1/";
     
     int mCartItemCount;
 
@@ -69,6 +75,9 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
 
     GoogleSignInAccount googleAccount;
     AccessToken facebookAccessToken;
+
+    String accessToken;
+
     boolean isLoggedInFacebook, isLoggedInGoogle;
 
     Bundle bundle;
@@ -230,6 +239,11 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
 
         rvBevande.setLayoutManager(new LinearLayoutManager(this));
 
+        //Retrieve token
+        SharedPreferences preferences = Home.this.getSharedPreferences("drink_take_away",Context.MODE_PRIVATE);
+        accessToken  = preferences.getString("token",null);//second parameter default value.
+
+
     }
 
 
@@ -269,9 +283,6 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
             }
         }
     }
-
-
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
@@ -355,7 +366,7 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
 
 
     public void InitJsonParsing (final VolleyCallback callback){
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, "http://192.168.1.90:1111/api/v1/menu?nameLocale=" + localName, null, new Response.Listener<JSONArray>() {
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, apiServerIp + "menu?nameLocale=" + localName, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 callback.onSuccess(response);
@@ -365,7 +376,14 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
             }
-        });
+        }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + accessToken);
+                return headers;
+            }
+        };;
         mQueue.add(request);
     }
 
@@ -374,12 +392,12 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
         String url = setUrl(buttonName);
         menus.clear();
 
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET,  url, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 try {
 
-                    for(int i=0; i< response.length(); i++)
+                   for(int i=0; i< response.length(); i++)
                     {
 
                         JSONObject r  = response.getJSONObject(i);
@@ -402,6 +420,7 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
                         menus.add(new Menu(localeAtt, bevandaAtt, price));
 
 
+
                     }
 
                     DrinkAdapter adapter = new DrinkAdapter(menus, (DrinkAdapter.onDrinkListener) context);
@@ -418,26 +437,17 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
             }
-        });
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + accessToken);
+                return headers;
+            }
+        };
+
         mQueue.add(request);
 
-    }
-
-
-    public String setWelcomeText(String defaultName)
-    {
-        String name = "";
-        String complete = "";
-
-        Bundle extras = getIntent().getExtras();
-
-        if(extras!=null)
-        { name = extras.getString("key"); }
-
-        if(!defaultName.equals(""))
-        { complete = defaultName.replace("name", name); }
-
-        return complete;
     }
 
     public String setUrl(String buttonName)
@@ -449,17 +459,17 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
                 url = "http://192.168.1.90:1111/api/v1/menu?nameLocale=" + localName;
                 break;
             case "Beers":
-                url = "http://192.168.1.90:1111/api/v1/specificdrinktype?nameLocale=" + localName + "&typeBevanda=beer";
+                url = apiServerIp + "specificdrinktype?nameLocale=" + localName + "&typeBevanda=beer";
                 break;
             case "Wines":
-                url = "http://192.168.1.90:1111/api/v1/specificdrinktype?nameLocale=" + localName + "&typeBevanda=wine";
+                url = apiServerIp + "specificdrinktype?nameLocale=" + localName + "&typeBevanda=wine";
                 break;
             case "Cocktails":
-                url = "http://192.168.1.90:1111/api/v1/specificdrinktype?nameLocale=" + localName + "&typeBevanda=cocktail";
+                url = apiServerIp + "specificdrinktype?nameLocale=" + localName + "&typeBevanda=cocktail";
                 break;
-        }   //FINE SWITCH
+        }
 
-    return url;
+        return url;
     }
 
     @Override
