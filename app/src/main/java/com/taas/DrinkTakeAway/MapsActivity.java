@@ -6,17 +6,18 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.os.Bundle;
+import android.os.Build;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import android.widget.Toast;
+import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
+import android.os.Bundle;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -32,31 +33,30 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.taas.DrinkTakeAway.Interface.CrowdingVolleyResponseListener;
+import com.taas.DrinkTakeAway.Interface.VolleyResponseListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.io.Writer;
 import java.util.ArrayList;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.InfoWindowAdapter, GoogleMap.OnMapClickListener {
 
     private GoogleMap mMap;
-    private static final String EXTRA_TEXT = "com.taas.DrinkTakeAway.MapsActivity.EXTRA_TEXT";
+    private static final String EXTRA_TEXT = "com.example.mapint.MapsActivity.EXTRA_TEXT";
 
     ArrayList<Marker> markers = new ArrayList<>();
-    private RequestQueue mQueue;
+    ArrayList<CrowdingDto> crowdingList = new ArrayList<>();
     private Button button;
+    private RequestQueue mQueue;
+    private RequestQueue crowQueue;
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.i("time", "create "+java.time.Clock.systemUTC().instant());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -65,22 +65,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
 
         mQueue = Volley.newRequestQueue(this);
+        crowQueue = Volley.newRequestQueue(this);
 
         button = (Button) findViewById(R.id.menu_button);
         LinearLayout li = (LinearLayout) findViewById(R.id.bottom);
         li.setBackgroundColor(Color.parseColor("#fbb324"));
 
-    }       //OnCreate ends
+    }       //onCreate() ends
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
         mMap = googleMap;
-
         /*
          *READ JSON VIA URL
          */
-
         jsonParseLocali(new VolleyResponseListener() {
             @Override
             public void onError(String message) {
@@ -89,14 +89,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             @Override
             public void onResponse(ArrayList<Marker> listOfMarker) {
+                Log.i("list", "array" + listOfMarker.size());
+                Log.i("control", "sono in on map ready");
 
                 String name, type, add;
                 LatLng pos;
                 double lat, lon;
+                Log.i("control", "ho creato le variabili");
 
-                //CREAZIONE MARKER
+                if(listOfMarker.isEmpty())
+                {  Log.i("control", "Vuota ktm");  }
+
+                //Adding MARKER
                 for(int i=0; i<listOfMarker.size();i++)
                 {
+                    Log.i("control", "sto creando marker");
                     lat = listOfMarker.get(i).getLat();
                     lon = listOfMarker.get(i).getLon();
                     type = listOfMarker.get(i).getType();
@@ -105,60 +112,73 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     mMap.addMarker(new MarkerOptions().position(pos).title(listOfMarker.get(i).getName())
                             .icon(bitmapDescriptorFromVector(getApplicationContext(), setCustomIcon(type))));
 
-                } //Creation markers loo ends
+                }
                 markers = listOfMarker;
             }
         });
+
+            getCrowding(new CrowdingVolleyResponseListener() {
+                @Override
+                public void onError(String message) {
+                    Log.i("list", "Something wrong");
+                }
+
+                @Override
+                public void onResponse(ArrayList<CrowdingDto> cDto) {
+                    crowdingList = cDto;
+                    for(CrowdingDto d:crowdingList)
+                    {
+                        Log.i("crow", "i val della lista sono " + d.getSum() + " " + d.getId_locale());     //Valori ok
+                    }
+                    Log.i("crow", "la lista è " + crowdingList);
+                    Log.i("crow", "la lista è " + cDto);
+                }
+            });
+
+            Log.i("time", "ready "+java.time.Clock.systemUTC().instant());
 
         mMap.setOnMarkerClickListener(this);
         mMap.setInfoWindowAdapter(this);
         mMap.setOnMapClickListener(this);
         setMapCenter();
+        Log.i("crow + list", " la lista contiene i valori " + markers);         //vuote
+        Log.i("crow + list", " la lista contiene i valori " + crowdingList);
 
-    } //OnMapReady ends
+    } // OnMapReady ends
 
-    //Setting interface for Callback
-    public interface VolleyResponseListener {
-        void onError(String message);
+    //------------------------------------------------------------------------------------------------------------//
 
-        void onResponse(ArrayList<Marker> listOfMarker);
-    }
-
-    private void jsonParseLocali(final VolleyResponseListener listener)
+    private void getCrowding(final CrowdingVolleyResponseListener listener)
     {
-
-        //String url = "http://10.0.2.2:1111/api/v1/locale";
-        //String url = "http://192.168.1.157:1111/api/v1/locale";
-        String url = "http://192.168.1.90:1111/api/v1/getAllLocals";
-        ArrayList<Marker> al = new ArrayList<>();
+        //String url = "http://10.0.2.2:1111/api/v1/getDrinkQuantityToDo/"+id;
+        //String url = "http://192.168.1.157:1111/api/v1/getDrinkQuantityToDo";
+        String url = "http://192.168.1.90:1111/api/v1/getDrinkQuantityToDo";
 
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response)
                     {
+                        ArrayList<CrowdingDto> cDto = new ArrayList<>();
                         try {
-                            LatLng pos;
-                            for(int i=0; i< response.length(); i++)
-                            {
-                                Marker m = new Marker(0,"name", "type", "address", 0.0, 0.0);
-                                JSONObject locale = response.getJSONObject(i);
 
-                                //Setting the Marker class object
-                                m.setId(locale.getInt("id"));
-                                m.setName(locale.getString("name"));
-                                m.setAddress(locale.getString("address"));
-                                m.setType(locale.getString("type"));
-                                m.setLat(locale.getDouble("lat"));
-                                m.setLon(locale.getDouble("lon"));
-                                al.add(m);
+                            for(int i=0; i<response.length(); i++)
+                            {
+                                CrowdingDto obj = new CrowdingDto(0, 0);
+                                JSONObject dtoCrowding = response.getJSONObject(i);
+                                obj.setSum(dtoCrowding.getLong("sum"));
+                                obj.setId_locale(dtoCrowding.getInt("id_local"));
+                                Log.i("list", "cdto "+ dtoCrowding.getLong("sum") + dtoCrowding.getInt("id_local"));
+                                cDto.add(obj);
                             }
 
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        //Setting the Callback listener
-                        listener.onResponse(al);
+                        for (int j =0;j<cDto.size();j++)
+                            Log.i("list", "cdto "+ cDto.get(j).getId_locale() + " " + cDto.get(j).getSum());
+
+                        listener.onResponse(cDto);
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -167,12 +187,62 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 listener.onError(error.toString());
             }
         });
+        crowQueue.add(request);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void jsonParseLocali(final VolleyResponseListener listener)
+    {
+        Log.i("time", "parse "+java.time.Clock.systemUTC().instant());
+        Log.i("parse", "Parsing locali");
+        //String url = "http://10.0.2.2:1111/api/v1/getAllLocals";
+        String url = "http://192.168.1.90:1111/api/v1/getAllLocals";
+        ArrayList<Marker> al = new ArrayList<>();
+
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response)
+            {
+                try {
+                    for(int i=0; i<response.length(); i++)
+                    {
+                        Marker m = new Marker(0,"name", "type", "address", 0.0, 0.0, 0);
+                        JSONObject locale = response.getJSONObject(i);
+
+                        m.setId(locale.getInt("id"));
+                        m.setName(locale.getString("name"));
+                        m.setAddress(locale.getString("address"));
+                        m.setType(locale.getString("type"));
+                        m.setLat(locale.getDouble("lat"));
+                        m.setLon(locale.getDouble("lon"));
+                        m.setCrowding(0);
+                        al.add(m);
+                    }
+
+                    for (Marker m: al)
+                    {   Log.i("each",  "--> " + m.getId() + " " + m.getName() + " " + m.getAddress() + " " + m.getType() + " " + m.getLat() + " " + m.getLon());    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                listener.onResponse(al);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+                listener.onError(error.toString());
+            }
+        });
 
         mQueue.add(request);
+        Log.i("time", "parse fine"+java.time.Clock.systemUTC().instant());
+
     }    // jsonParseLocali method ends
 
-    //SETTING FOCUS TO CITY CENTER
     private void setMapCenter() {
+        //SETTING FOCUS TO CITY CENTER
         float zoomLevel = 16.0f;
         LatLng mapCenter;
         //Mole Antonelliana 45.0690113  7.6910275
@@ -183,57 +253,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.moveCamera((CameraUpdateFactory.newLatLngZoom(mapCenter, zoomLevel)));
     }
 
-    //ANDIAMO A DEFINIRE LA PROCEDURA PER APRIRE IL MENU
-    public void openMenu(String localName) {
-        Intent intent = new Intent(this, Home.class);
-        intent.putExtra("name", localName);
-        startActivity(intent);
-    }
-
-    private BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId)
-    {
-        Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
-        vectorDrawable.setBounds(0,0, vectorDrawable.getIntrinsicWidth(),vectorDrawable.getIntrinsicHeight());
-        Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-
-        Canvas canvas = new Canvas(bitmap);
-        vectorDrawable.draw(canvas);
-
-        return BitmapDescriptorFactory.fromBitmap(bitmap);
-    }
-
-    public TextView setTextAndColor(TextView tv, String str, String att)
-    {
-        tv.setText(att + ": " + str);
-        tv.setTextColor(Color.parseColor("#000000"));
-
-        return tv;
-    }
-
-    public int setCustomIcon(String type)
-    {
-        int path = R.drawable.ic_cocktail;         //It needs initialization to avoid runtime error
-
-        switch (type)
-        {
-            case "pub":
-                path = R.drawable.ic_beer;
-                break;
-            case "cocktail bar":
-                path = R.drawable.ic_cocktail;
-                break;
-            case "wine bar":
-                path = R.drawable.ic_wine;
-                break;
-        }
-        return path;
-    }
-
     @Override
     public boolean onMarkerClick(com.google.android.gms.maps.model.Marker marker) {
         TextView selectedMarkerLocalName = findViewById(R.id.local_name);
 
         final String localName = marker.getTitle();
+
         selectedMarkerLocalName.setText(localName);
 
         TextView selectedMarker = (TextView) findViewById(R.id.local_name);
@@ -252,43 +277,153 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     @Override
+    public void onMapClick(LatLng latLng) {
+
+        Toast.makeText(this, "Choose a marker on the map", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
     public View getInfoWindow(com.google.android.gms.maps.model.Marker marker) {
+        Log.i("infowin", "sono stato cliccato quindi devo apparire");
         String title = marker.getTitle();
+        int crow = 0;
+        String cCrow = null;
+        int waitTime = 0;
 
         View row = getLayoutInflater().inflate(R.layout.custom_infowindow, null);
+        //PRENDIAMO DAL LAYOUT LA TEXT VIEW CON ID ADDRESS
+        TextView name = (TextView) row.findViewById(R.id.name);
+        //PRENDIAMO DAL LAYOUT LA TEXT VIEW CON ID ADDRESS
+        TextView address = (TextView) row.findViewById(R.id.address);
+        //PRENDIAMO DAL LAYOUT LA TEXT VIEW CON ID CROWDING
+        TextView crowding = (TextView) row.findViewById(R.id.crowding);
+        TextView wait = row.findViewById(R.id.waiting_time);
 
         for (int i=0;i<markers.size();i++)
         {
-            if(title.equals(markers.get(i).getName()))
-            {
+            if (title.equals(markers.get(i).getName())) {
+                try
+                {   crow = (int) crowdingList.get(markers.get(i).getId()-1).getSum();   }
+                catch (IndexOutOfBoundsException e)
+                {   crow = 0;   }
+                cCrow = setCrowdingInfoWinfow(crow);
+                Log.i("val crow", "val infow " + markers.get(i).getCrowding());
+                //Log.i("val info", "lettura " + crowdingList.get(markers.get(i).getId()-1).getSum());
 
-                TextView name = (TextView) row.findViewById(R.id.name);
-                TextView address = (TextView) row.findViewById(R.id.address);
-                TextView crowding = (TextView) row.findViewById(R.id.crowding);
-
+                //SETTING COLORI TESTO/INFOWINDOW
                 String cName = markers.get(i).getName() + " ";
+                //Log.i("ciclo", "val="+cont);
                 String cAdd = markers.get(i).getAddress() + " ";
-                String cCrow = "Low";
 
-
+                //ASSEGNAZIONE TESTO DA VISUALIZZARE
                 name = setTextAndColor(name, cName, " Name");
+
                 address = setTextAndColor(address, cAdd, " Address");
+
                 setTextAndColor(crowding, cCrow, " Crowding");
 
-                row.setBackgroundColor(Color.parseColor("#fbb324"));
+                waitTime = getWaitInfoWindow(crow);
+                setTextAndColor(wait, String.valueOf(waitTime), " Waiting time");
 
+
+                row.setBackgroundColor(Color.parseColor("#fbb324"));
             }
         }
+        Log.i("infowin", "il mio lavoro è finito");
+
         return row;
     }
 
     @Override
     public View getInfoContents(com.google.android.gms.maps.model.Marker marker) {
         return null;
+    } //FINE getInfoContent
+
+
+    //ANDIAMO A DEFINIRE LA PROCEDURA PER APRIRE IL MENU
+    public void openMenu(String localName) {
+        Intent intent = new Intent(this, Home.class);
+        intent.putExtra("name", localName);
+
+        startActivity(intent);
+
     }
 
-    @Override
-    public void onMapClick(LatLng latLng) {
-        Toast.makeText(this, "Choose a marker on the map", Toast.LENGTH_LONG).show();
+    private BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId)
+    {
+        Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
+        vectorDrawable.setBounds(0,0, vectorDrawable.getIntrinsicWidth(),vectorDrawable.getIntrinsicHeight());
+        Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+
+        Canvas canvas = new Canvas(bitmap);
+        vectorDrawable.draw(canvas);
+
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
+
     }
+
+    public TextView setTextAndColor(TextView tv, String str, String att)
+    {
+        if(att.equals(" Waiting time"))
+            tv.setText(att + ": " + str + " min");
+        else
+            tv.setText(att + ": " + str);
+
+        tv.setTextColor(Color.parseColor("#000000"));
+
+        return tv;
+    }
+
+    public int setCustomIcon(String type)
+    {
+        int path = R.drawable.ic_cocktail;         //INIZIALIZZAZIONE PER NON AVERE ERRORI A RUNTIME
+
+        switch (type)
+        {
+            case "pub":
+                path = R.drawable.ic_beer;
+                break;
+            case "cocktail bar":
+                path = R.drawable.ic_cocktail;
+                break;
+            case "wine bar":
+                path = R.drawable.ic_wine;
+                break;
+        }
+        return path;
+    }
+
+    public String setCrowdingInfoWinfow(int crow)
+    {
+        String cCrow;
+        if(crow >= 25)
+            cCrow = "High";
+        else if(crow<25 && crow > 7)
+                cCrow = "Medium";
+        else
+            cCrow = "Low";
+
+        return cCrow;
+    }
+
+    public int getWaitInfoWindow(int crow)
+    {
+        int wait = 0;
+
+        if(crow <=2)
+            wait = 0;
+        else if(crow >2 && crow <=7)
+            wait = 2;
+        else if(crow >7 && crow <=12)
+            wait = 5;
+        else if(crow >12 && crow <=18)
+            wait = 10;
+        else if(crow >18 && crow <=25)
+            wait = 15;
+        else
+            wait = 20;
+
+        return wait;
+    }
+
 }

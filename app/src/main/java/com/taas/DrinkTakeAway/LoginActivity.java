@@ -262,10 +262,6 @@ public class LoginActivity extends AppCompatActivity {
                             SharedPreferences preferences = LoginActivity.this.getSharedPreferences("drink_take_away",Context.MODE_PRIVATE);
                             preferences.edit().putString("token",token).apply();
 
-
-
-
-
                             if (response.get("role").equals("barista"))
                                 intent = new Intent(context, BartenderActivity.class);
                             else

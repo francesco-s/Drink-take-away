@@ -9,8 +9,11 @@ public class Marker {
     private String address;
     private double lat;
     private double lon;
+    private long crowding;
 
-    public Marker(int id, String name, String type, String address, double lat, double lon)
+
+
+    public Marker(int id, String name, String type, String address, double lat, double lon, long crowding)
     {
         this.id = id;
         this.name = name;
@@ -18,6 +21,15 @@ public class Marker {
         this.address = address;
         this.lat = lat;
         this.lon = lon;
+        this.crowding = crowding;
+    }
+
+    public long getCrowding() {
+        return crowding;
+    }
+
+    public void setCrowding(long crowding) {
+        this.crowding = crowding;
     }
 
     public int getId() {
@@ -69,4 +81,4 @@ public class Marker {
     }
 
 
-} //FINE CLASSE
+}

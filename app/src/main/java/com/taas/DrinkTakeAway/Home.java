@@ -201,6 +201,9 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
         });
 
 
+        //Retrieve token
+        SharedPreferences preferences = Home.this.getSharedPreferences("drink_take_away",Context.MODE_PRIVATE);
+        accessToken  = preferences.getString("token",null);//second parameter default value.
 
         InitJsonParsing(new VolleyCallback() {
             @Override
@@ -239,9 +242,6 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
 
         rvBevande.setLayoutManager(new LinearLayoutManager(this));
 
-        //Retrieve token
-        SharedPreferences preferences = Home.this.getSharedPreferences("drink_take_away",Context.MODE_PRIVATE);
-        accessToken  = preferences.getString("token",null);//second parameter default value.
 
 
     }
@@ -383,7 +383,7 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
                 headers.put("Authorization", "Bearer " + accessToken);
                 return headers;
             }
-        };;
+        };
         mQueue.add(request);
     }
 
@@ -418,9 +418,6 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
                         Locale localeAtt = new Locale(localName, localAddress, localType, localLat, localLon);
 
                         menus.add(new Menu(localeAtt, bevandaAtt, price));
-
-
-
                     }
 
                     DrinkAdapter adapter = new DrinkAdapter(menus, (DrinkAdapter.onDrinkListener) context);
