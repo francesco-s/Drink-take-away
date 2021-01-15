@@ -36,7 +36,7 @@ import java.util.Map;
 
 public class OrdersHistory extends AppCompatActivity implements HistoryOrderAdapter.onDrinkListenerCart{
 
-    final String serverAddress = "http://192.168.1.90:1111/api/v1/orders";
+    final String serverAddress = "http://192.168.1.90:1111/api/v1/";
 
     private String email;
     private RequestQueue mQueue;
@@ -71,7 +71,7 @@ public class OrdersHistory extends AppCompatActivity implements HistoryOrderAdap
 
     private void getAllUserOrders(String email)
     {
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, serverAddress + "?email=" + email , null, new Response.Listener<JSONArray>() {
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, serverAddress + "orders?email=" + email , null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 try {
@@ -83,11 +83,12 @@ public class OrdersHistory extends AppCompatActivity implements HistoryOrderAdap
                         String drinkName = r.getJSONObject("menu").getJSONObject("bevanda").getString("name");
                         String localName = r.getJSONObject("menu").getJSONObject("locale").getString("name");
                         String timestamp = r.getString("timestamp");
+                        String status = r.getString("status");
                         int numerosity = r.getInt("numerosity");
                         String drinkId = r.getJSONObject("menu").getJSONObject("id").getString("id_bevanda");
                         float price =(float) r.getJSONObject("menu").getLong("price");
 
-                        historyOrderEntryList.add(new HistoryOrderEntry(drinkId, localName, drinkName, numerosity, price, orderNumber, timestamp ));
+                        historyOrderEntryList.add(new HistoryOrderEntry(drinkId, localName, drinkName, numerosity, price, orderNumber, timestamp, status ));
 
                     }
                     //rvOrder.addItemDecoration(new DividerItemDecoration(context, LinearLayout.VERTICAL));

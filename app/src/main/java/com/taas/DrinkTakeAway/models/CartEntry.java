@@ -63,5 +63,4 @@ public class CartEntry implements Serializable {
 
     public void decreaseNum(){ this.numerosity --;}
 
-
 }

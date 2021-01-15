@@ -51,19 +51,24 @@ public class HistoryOrderAdapter extends
         TextView timestampTextView = holder.timestampTextView;
         TextView localNameTextView = holder.localNameTextView;
         TextView orderNumberTextView = holder.orderNumberTextView;
+        TextView statusNumberTextView = holder.statusNumberTextView;
+
 
         if (position != 0){
             HistoryOrderEntry HistoryOrderEntryPre = mHistoryOrderEntry.get(position - 1);
             if (HistoryOrderEntry.getOrderNumber() != HistoryOrderEntryPre.getOrderNumber()){
                 timestampTextView.setText("\n" +HistoryOrderEntry.getTimestamp().substring(0,10)+ "\n");
                 localNameTextView.setText("\n" +HistoryOrderEntry.getLocalName()+ "\n");
-                orderNumberTextView.setText("\n #" + Integer.toString(HistoryOrderEntry.getOrderNumber())+ "\n");
+                orderNumberTextView.setText("\n Order#" + Integer.toString(HistoryOrderEntry.getOrderNumber())+ "\n");
+                statusNumberTextView.setText("\n" +HistoryOrderEntry.getStatus()+ "\n");
             }
         }
         else {
             timestampTextView.setText("\n" +HistoryOrderEntry.getTimestamp().substring(0,10)+ "\n");
             localNameTextView.setText("\n" + HistoryOrderEntry.getLocalName() + "\n");
-            orderNumberTextView.setText("\n #" + Integer.toString(HistoryOrderEntry.getOrderNumber()) + "\n");
+            orderNumberTextView.setText("\n Order#" + Integer.toString(HistoryOrderEntry.getOrderNumber()) + "\n");
+            statusNumberTextView.setText("\n" +HistoryOrderEntry.getStatus()+ "\n");
+
         }
 
         timestampTextView.setTypeface(null, Typeface.BOLD);
@@ -90,7 +95,7 @@ public class HistoryOrderAdapter extends
     public class ViewHolder extends RecyclerView.ViewHolder{
         // Your holder should contain a member variable
         // for any view that will be set as you render a row
-        public TextView nameTextView, priceTextView, numerosityTextView, localNameTextView, timestampTextView, orderNumberTextView;
+        public TextView nameTextView, priceTextView, numerosityTextView, localNameTextView, timestampTextView, orderNumberTextView, statusNumberTextView;
         HistoryOrderAdapter.onDrinkListenerCart mOnDrinkListenerCart;
 
 
@@ -108,6 +113,8 @@ public class HistoryOrderAdapter extends
             localNameTextView = (TextView) itemView.findViewById(R.id.local_name_history);
             timestampTextView = (TextView) itemView.findViewById(R.id.timestamp_history);
             orderNumberTextView = (TextView) itemView.findViewById(R.id.order_num_history);
+            statusNumberTextView = (TextView) itemView.findViewById(R.id.status_history);
+
 
 
             this.mOnDrinkListenerCart = onDrinkListenerCart;
