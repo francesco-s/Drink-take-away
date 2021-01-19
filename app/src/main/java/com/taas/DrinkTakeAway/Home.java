@@ -67,7 +67,9 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
     TextView textViewMenuTopUtente;
     TextView textViewMenuTopEmail;
 
+    //String apiServerIp = "http://192.168.1.157:1111/api/v1/";
     String apiServerIp = "http://192.168.1.90:1111/api/v1/";
+
     
     int mCartItemCount;
 
@@ -454,6 +456,7 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
         {
             case "All":
                 url = "http://192.168.1.90:1111/api/v1/menu?nameLocale=" + localName;
+                //url = "http://192.168.1.157:1111/api/v1/menu?nameLocale=" + localName;
                 break;
             case "Beers":
                 url = apiServerIp + "specificdrinktype?nameLocale=" + localName + "&typeBevanda=beer";

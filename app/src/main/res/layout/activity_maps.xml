@@ -20,8 +20,9 @@
             android:id="@+id/bottom"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
-            android:layout_weight="7.0"
+            android:layout_weight="6"
             android:orientation="vertical"
+            android:background="@color/yellow_1"
             android:gravity="center">
 
         <TextView
@@ -29,14 +30,19 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/local_name"
                 android:textStyle="bold"
+                android:textColor="@color/brown_1"
+                android:paddingBottom="10dp"
                 android:gravity="center"/>
-
 
         <Button
                 android:id="@+id/menu_button"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:text="Show Menus"/>
+                android:layout_width="140dp"
+                android:text="Show Menu"
+                android:background="@drawable/maps_button"
+                android:textColor="@color/white"
+
+                />
 
     </LinearLayout>
 

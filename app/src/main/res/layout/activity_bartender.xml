@@ -4,13 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".BartenderActivity">
+    tools:context=".BartenderActivity"
+    android:background="@drawable/custom_border2">
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scrollbars="vertical"
-        >
-
+        android:scrollbars="vertical">
 
         <include layout="@layout/content_bartender" />
 

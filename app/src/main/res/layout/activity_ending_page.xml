@@ -7,6 +7,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         tools:context=".EndingPage"
+        android:background="@color/yellow_1"
         android:id="@+id/home">
 
     <LinearLayout
@@ -19,8 +20,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/order"
-                android:text="Ending page"
-                android:textSize="22dp"/>
+                android:text="Order receipt"
+                android:textStyle="bold"
+                android:textSize="30dp"/>
     </LinearLayout>
 
     <LinearLayout
@@ -29,83 +31,111 @@
             android:gravity="center"
             android:layout_weight="0.5"
             android:orientation="horizontal">
-        <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:layout_weight="1">
-            <TextView
-                    android:text="Payment ID"
-                    android:layout_width="250dp"
-                    android:layout_height="30dp"
-                    android:textSize="20dp"
-                    android:id="@+id/payment_id"/>
-            <TextView
-                    android:text="Payment amount"
-                    android:layout_width="250dp"
-                    android:layout_height="wrap_content"
-                    android:textSize="20dp"
-                    android:id="@+id/payment_amount"/>
-            <TextView
-                    android:text="Payment status"
-                    android:layout_width="250dp"
-                    android:layout_height="wrap_content"
-                    android:textSize="20dp"
-                    android:id="@+id/payment_status"/>
-        </LinearLayout>
 
         <LinearLayout
+                android:background="@drawable/custom_border"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
                 android:layout_weight="0.65">
 
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textSize="26dp"
+                android:textStyle="bold"
+                android:text="Payment info"/>
+
+            <TextView
                     android:text="ID"
-                    android:layout_width="250dp"
-                    android:layout_height="30dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="30dp"
+                    android:paddingTop="20dp"
                     android:textSize="20dp"
+                    android:textStyle="bold"
                     android:id="@+id/id"/>
+
             <TextView
-                    android:text="amount"
-                    android:layout_width="250dp"
+                    android:text="Amount"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:paddingLeft="30dp"
+                    android:paddingTop="20dp"
                     android:textSize="20dp"
+                    android:textStyle="bold"
                     android:id="@+id/amount"/>
+
             <TextView
-                    android:text="status"
-                    android:layout_width="250dp"
+                    android:text="Status"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:paddingLeft="30dp"
+                    android:paddingTop="20dp"
                     android:textSize="20dp"
+                    android:textStyle="bold"
                     android:id="@+id/status"/>
 
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/order_id"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="59dp"
+                    android:paddingLeft="30dp"
+                    android:paddingTop="20dp"
+                    android:text="Order Code"
+                    android:textSize="20dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/good_bye"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="2dp"
+                    android:paddingLeft="30dp"
+                    android:text="We hope to see you soon, enjoy your drinks!"
+                    android:textSize="20dp"
+                    android:textStyle="bold|italic" />
+            </RelativeLayout>
         </LinearLayout>
-
-
     </LinearLayout>
-
-
 
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
             android:layout_weight="1">
+
         <!--
         <ImageButton
                 android:layout_width="70dp"
                 android:layout_height="70dp"
                 android:id="@+id/home_button"
-                app:srcCompat="@animator/selector_button"
-
+                android:background="@drawable/ic_home"
         />-->
-        <Button
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:id="@+id/btn_home"
-        />
 
-    </LinearLayout>
+        <Button
+            android:id="@+id/btn_home"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:background="@drawable/ic_home" />
+
+        <Button
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:id="@+id/btn_history"
+            android:background="@drawable/ic_history"
+            android:visibility="gone"
+            />
+
+   </LinearLayout>
 
 
 </LinearLayout>
