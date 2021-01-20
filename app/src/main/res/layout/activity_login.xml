@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
-    android:background="@color/yellow_1"
+    android:background="@drawable/custom_border2"
     android:orientation="vertical"
     tools:context=".LoginActivity">
 
@@ -24,16 +24,25 @@
             android:textAlignment="center"
             android:textColor="@color/brown_1"
             android:textSize="44dp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:visibility="gone"/>
+        <ImageView
+            android:id="@+id/simple_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="296dp"
+            android:layout_gravity="center"
+            android:scaleType="center"
+            android:src="@drawable/ic_logo1"
+            android:visibility="gone"></ImageView>
 
         <ImageView
             android:id="@+id/logo"
-            android:layout_width="128dp"
-            android:layout_height="128dp"
+            android:layout_width="wrap_content"
+            android:layout_height="296dp"
             android:layout_gravity="center"
             android:scaleType="center"
-            android:src="@drawable/ic_logo1"></ImageView>
-
+            android:src="@drawable/ic_take_away_marrone"
+            android:visibility="visible"></ImageView>
     </LinearLayout>
 
     <LinearLayout

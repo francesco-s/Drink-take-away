@@ -27,12 +27,15 @@ public class EndingPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ending_page);
 
+        getSupportActionBar().hide();
+
         orderID = findViewById(R.id.order_id);
         id = findViewById(R.id.id);
         amount = findViewById(R.id.amount);
         status = findViewById(R.id.status);
 
         home = findViewById(R.id.btn_home);
+
         home.setBackgroundResource(R.drawable.ic_home);
         home.setTooltipText("Go back to the home page");
         home.setOnClickListener(new View.OnClickListener() {
@@ -40,6 +43,7 @@ public class EndingPage extends AppCompatActivity {
             public void onClick(View v) {
                 Intent homeIntent = new Intent(EndingPage.this, MapsActivity.class);
                 EndingPage.this.startActivity(homeIntent);
+                finish();
             }
         });
 
@@ -48,7 +52,9 @@ public class EndingPage extends AppCompatActivity {
         history.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent historyIntent = new Intent(EndingPage.this, OrdersHistory.class);
+                EndingPage.this.startActivity(historyIntent);
+                finish();
             }
         });
 
@@ -72,7 +78,7 @@ public class EndingPage extends AppCompatActivity {
             id.setText("Payment ID: " + payId);
             amount.setText("Total: " + paymentAmount + " €");
             status.setText("Status: " + response.getString("state"));
-            orderID.setText("Order ID: " + generateCode());
+            orderID.setText("Order code: " + generateCode());
 
 
             //Toast.makeText(this, "Pagamento effettuato", Toast.LENGTH_LONG).show();

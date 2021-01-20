@@ -81,6 +81,8 @@ public class ShoppingCart extends AppCompatActivity implements CartAdapter.onDri
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shopping_cart);
 
+        ShoppingCart.this.setTitle("Your Shopping Cart");
+
         mQueue = Volley.newRequestQueue(this);
 
         rvBevandeCart = (RecyclerView) findViewById(R.id.recyclercart);
@@ -248,7 +250,6 @@ public class ShoppingCart extends AppCompatActivity implements CartAdapter.onDri
             e.printStackTrace();
         }
         return params;
-
 
     }
 

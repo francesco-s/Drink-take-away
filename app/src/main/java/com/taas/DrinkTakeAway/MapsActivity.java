@@ -89,21 +89,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             @Override
             public void onResponse(ArrayList<Marker> listOfMarker) {
-                Log.i("list", "array" + listOfMarker.size());
-                Log.i("control", "sono in on map ready");
+                Log.i("list", "Merker list size: " + listOfMarker.size());
 
                 String name, type, add;
                 LatLng pos;
                 double lat, lon;
-                Log.i("control", "ho creato le variabili");
+
 
                 if(listOfMarker.isEmpty())
-                {  Log.i("control", "Vuota ktm");  }
+                {  Log.i("control", "Vuota");  }
 
                 //Adding MARKER
                 for(int i=0; i<listOfMarker.size();i++)
                 {
-                    Log.i("control", "sto creando marker");
                     lat = listOfMarker.get(i).getLat();
                     lon = listOfMarker.get(i).getLon();
                     type = listOfMarker.get(i).getType();
@@ -147,8 +145,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void getCrowding(final CrowdingVolleyResponseListener listener)
     {
         //String url = "http://10.0.2.2:1111/api/v1/getDrinkQuantityToDo/"+id;
-        //String url = "http://192.168.1.157:1111/api/v1/getDrinkQuantityToDo";
-        String url = "http://192.168.1.90:1111/api/v1/getDrinkQuantityToDo";
+        String url = "http://192.168.1.157:1111/api/v1/getDrinkQuantityToDo";
+        //String url = "http://192.168.1.90:1111/api/v1/getDrinkQuantityToDo";
 
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONArray>() {
@@ -191,8 +189,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     {
         Log.i("time", "parse "+java.time.Clock.systemUTC().instant());
         Log.i("parse", "Parsing locali");
-        //String url = "http://192.168.1.157:1111/api/v1/getAllLocals";
-        String url = "http://192.168.1.90:1111/api/v1/getAllLocals";
+        String url = "http://192.168.1.157:1113/api/v1/getAllLocals";
+        //String url = "http://192.168.1.90:1113/api/v1/getAllLocals";
         ArrayList<Marker> al = new ArrayList<>();
 
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
@@ -235,6 +233,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mQueue.add(request);
     }    // jsonParseLocali method ends
 
+    //------------------------------------------------------------------------------------------------------------//
+
     private void setMapCenter() {
         //SETTING FOCUS TO CITY CENTER
         float zoomLevel = 16.0f;
@@ -271,7 +271,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onMapClick(LatLng latLng) {
-
         Toast.makeText(this, "Choose a marker on the map", Toast.LENGTH_LONG).show();
     }
 
@@ -319,7 +318,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 row.setBackgroundColor(Color.parseColor("#fbb324"));
             }
         }
-        Log.i("infowin", "il mio lavoro è finito");
 
         return row;
     }

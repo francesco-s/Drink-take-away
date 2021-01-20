@@ -67,8 +67,8 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
     TextView textViewMenuTopUtente;
     TextView textViewMenuTopEmail;
 
-    //String apiServerIp = "http://192.168.1.157:1111/api/v1/";
-    String apiServerIp = "http://192.168.1.90:1111/api/v1/";
+    String apiServerIp = "http://192.168.1.157:1111/api/v1/";
+    //String apiServerIp = "http://192.168.1.90:1111/api/v1/";
 
     
     int mCartItemCount;
@@ -96,6 +96,8 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
         final Button cocktails = findViewById(R.id.cocktail);
         final Button allDrinks = findViewById(R.id.all);
         rvBevande = (RecyclerView) findViewById(R.id.recyclermenu);
+
+        Home.this.setTitle("Menu");
 
 
         context =this;
@@ -175,6 +177,7 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
             public void onClick(View v) {
                 String n = beers.getText().toString();
                 jsonParse(n);
+                Home.this.setTitle("Menu - Beers list");
             }
         });
 
@@ -183,6 +186,7 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
             public void onClick(View v) {
                 String n = wines.getText().toString();
                 jsonParse(n);
+                Home.this.setTitle("Menu - Wines list");
             }
         });
 
@@ -191,6 +195,7 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
             public void onClick(View v) {
                 String n = cocktails.getText().toString();
                 jsonParse(n);
+                Home.this.setTitle("Menu - Cockatils list");
             }
         });
 
@@ -199,6 +204,7 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
             public void onClick(View v) {
                 String n = allDrinks.getText().toString();
                 jsonParse(n);
+                Home.this.setTitle("All drinks list");
             }
         });
 
@@ -291,7 +297,7 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
     {
         switch (item.getItemId()) {
             case R.id.cart: {
-                Toast.makeText(context, "Hai cliccato  cart", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Cart pressed", Toast.LENGTH_SHORT).show();
 
                 Intent intent = new Intent(context, ShoppingCart.class);
                 bundle.putSerializable("order", ordine);
@@ -455,8 +461,8 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
         switch (buttonName)
         {
             case "All":
-                url = "http://192.168.1.90:1111/api/v1/menu?nameLocale=" + localName;
-                //url = "http://192.168.1.157:1111/api/v1/menu?nameLocale=" + localName;
+                //url = "http://192.168.1.90:1111/api/v1/menu?nameLocale=" + localName;
+                url = "http://192.168.1.157:1111/api/v1/menu?nameLocale=" + localName;
                 break;
             case "Beers":
                 url = apiServerIp + "specificdrinktype?nameLocale=" + localName + "&typeBevanda=beer";

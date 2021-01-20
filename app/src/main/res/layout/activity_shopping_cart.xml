@@ -18,10 +18,10 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textSize="28dp"
-            android:paddingTop="20dp"
-            android:paddingBottom="20dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
             android:textStyle="bold"
-            android:text="Shopping Cart"
+            android:text="This is what you choose from the menu"
             />
     </LinearLayout>
 

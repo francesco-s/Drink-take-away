@@ -36,8 +36,8 @@ import java.util.Map;
 
 public class OrdersHistory extends AppCompatActivity implements HistoryOrderAdapter.onDrinkListenerCart{
 
-    //final String serverAddress = "http://192.168.1.157:1111/api/v1/";
-    final String serverAddress = "http://192.168.1.90:1111/api/v1/";
+    final String serverAddress = "http://192.168.1.157:1111/api/v1/";
+    //final String serverAddress = "http://192.168.1.90:1111/api/v1/";
 
     private String email;
     private RequestQueue mQueue;
@@ -52,6 +52,8 @@ public class OrdersHistory extends AppCompatActivity implements HistoryOrderAdap
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_orders_history);
+
+        this.setTitle("This is your Order History");
 
         rvOrder = (RecyclerView) findViewById(R.id.recyclerOrderHistory);
         historyOrderEntryList = new ArrayList<>();
@@ -88,7 +90,6 @@ public class OrdersHistory extends AppCompatActivity implements HistoryOrderAdap
                         float price =(float) r.getJSONObject("menu").getLong("price");
 
                         historyOrderEntryList.add(new HistoryOrderEntry(drinkId, localName, drinkName, numerosity, price, orderNumber, timestamp, status));
-
                     }
                     //rvOrder.addItemDecoration(new DividerItemDecoration(context, LinearLayout.VERTICAL));
                     HistoryOrderAdapter adapter = new HistoryOrderAdapter(historyOrderEntryList, (HistoryOrderAdapter.onDrinkListenerCart) context);
