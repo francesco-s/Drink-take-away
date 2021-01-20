@@ -36,7 +36,8 @@ import java.util.Map;
 
 public class OrdersHistory extends AppCompatActivity implements HistoryOrderAdapter.onDrinkListenerCart{
 
-    final String serverAddress = "http://192.168.1.90:1111/api/v1/";
+    final String serverAddress = "http://192.168.1.157:1111/api/v1/";
+    //final String serverAddress = "http://192.168.1.90:1111/api/v1/";
 
     private String email;
     private RequestQueue mQueue;
@@ -52,6 +53,8 @@ public class OrdersHistory extends AppCompatActivity implements HistoryOrderAdap
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_orders_history);
 
+        this.setTitle("This is your Order History");
+
         rvOrder = (RecyclerView) findViewById(R.id.recyclerOrderHistory);
         historyOrderEntryList = new ArrayList<>();
 
@@ -66,8 +69,6 @@ public class OrdersHistory extends AppCompatActivity implements HistoryOrderAdap
 
         getAllUserOrders(email);
     }
-
-
 
     private void getAllUserOrders(String email)
     {
@@ -88,8 +89,7 @@ public class OrdersHistory extends AppCompatActivity implements HistoryOrderAdap
                         String drinkId = r.getJSONObject("menu").getJSONObject("id").getString("id_bevanda");
                         float price =(float) r.getJSONObject("menu").getLong("price");
 
-                        historyOrderEntryList.add(new HistoryOrderEntry(drinkId, localName, drinkName, numerosity, price, orderNumber, timestamp, status ));
-
+                        historyOrderEntryList.add(new HistoryOrderEntry(drinkId, localName, drinkName, numerosity, price, orderNumber, timestamp, status));
                     }
                     //rvOrder.addItemDecoration(new DividerItemDecoration(context, LinearLayout.VERTICAL));
                     HistoryOrderAdapter adapter = new HistoryOrderAdapter(historyOrderEntryList, (HistoryOrderAdapter.onDrinkListenerCart) context);

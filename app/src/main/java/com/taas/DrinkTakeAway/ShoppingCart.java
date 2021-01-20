@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -72,17 +73,20 @@ public class ShoppingCart extends AppCompatActivity implements CartAdapter.onDri
     //ENVIRONMENT PRODUCTION IS USED WHEN THE APP IS READY FOR THE RELEASE
 
 
-    final String serverAddress = "http://192.168.1.90:1111/api/v1/saveOrder";
+    //final String serverAddress = "http://192.168.1.90:1111/api/v1/saveOrder";
+    final String serverAddress = "http://192.168.1.157:1111/api/v1/saveOrder";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shopping_cart);
 
+        ShoppingCart.this.setTitle("Your Shopping Cart");
+
         mQueue = Volley.newRequestQueue(this);
 
         rvBevandeCart = (RecyclerView) findViewById(R.id.recyclercart);
-        submit = (Button) findViewById(R.id.submit);
+        submit = (Button) findViewById(R.id.pay_button);
         context = this;
 
         Intent intent = this.getIntent();
@@ -100,7 +104,7 @@ public class ShoppingCart extends AppCompatActivity implements CartAdapter.onDri
 
 
         total = 0;
-
+        int oID;
         for(int i=0;i<ordine.size();i++)
         { total = total + ordine.get(i).getPrice(); }
 
@@ -108,7 +112,6 @@ public class ShoppingCart extends AppCompatActivity implements CartAdapter.onDri
         /*
          * PayPal payment section start
          */
-
         Intent payIntent = new Intent(this, PayPalService.class);
         payIntent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, paypalConfig);
         startService(payIntent);
@@ -169,17 +172,15 @@ public class ShoppingCart extends AppCompatActivity implements CartAdapter.onDri
                     }
                 }
 
-                Log.i("msg", "Payment successful");
-                Log.i("msg", "Payed: " + amount);
             }
             else if (resultCode == Activity.RESULT_CANCELED)
             {
-                Log.i("msg", "Cancel");
+                Toast.makeText(this, "Payment canceled", Toast.LENGTH_LONG);
             }
         }
         else if (resultCode == PaymentActivity.RESULT_EXTRAS_INVALID)
         {
-            Log.i("msg", "Invalid");
+            Toast.makeText(this, "Invalid payment", Toast.LENGTH_LONG);
         }
     }
 
@@ -201,8 +202,6 @@ public class ShoppingCart extends AppCompatActivity implements CartAdapter.onDri
 
     private void submitOrder(JSONObject obj)
     {
-
-
         JsonObjectRequest request = new JsonObjectRequest(serverAddress, obj, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -251,7 +250,6 @@ public class ShoppingCart extends AppCompatActivity implements CartAdapter.onDri
             e.printStackTrace();
         }
         return params;
-
 
     }
 

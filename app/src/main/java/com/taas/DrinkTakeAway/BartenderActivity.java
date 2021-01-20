@@ -38,7 +38,9 @@ import java.util.Map;
 
 public class BartenderActivity extends AppCompatActivity implements BartenderOrderAdapter.onDrinkListenerCart {
 
-    final String serverAddress = "http://192.168.1.90:1111/api/v1/";
+    final String serverAddress = "http://192.168.1.157:1111/api/v1/";
+    //final String serverAddress = "http://192.168.1.90:1111/api/v1/";
+
 
     Context context;
     RecyclerView rvBartenderHistory;
@@ -53,6 +55,8 @@ public class BartenderActivity extends AppCompatActivity implements BartenderOrd
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bartender);
+
+        this.setTitle("Bartender Order list");
 
         context = this;
 
@@ -162,7 +166,6 @@ public class BartenderActivity extends AppCompatActivity implements BartenderOrd
 
         rvBartenderHistory.setLayoutManager(new LinearLayoutManager(this));
         mQueue.add(request);
-
     }
 
 
@@ -198,7 +201,8 @@ public class BartenderActivity extends AppCompatActivity implements BartenderOrd
                         params.put(String.valueOf(i), innerParams);
                     }
 
-                    String address = "http://192.168.1.90:1112/api/v1/";
+                    String address = "http://192.168.1.157:1112/api/v1/";
+                    //String address = "http://192.168.1.90:1112/api/v1/";
                     JsonObjectRequest request2 = new JsonObjectRequest(address+ "orderHistory/saveOrder", params, new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
@@ -234,7 +238,6 @@ public class BartenderActivity extends AppCompatActivity implements BartenderOrd
         };
 
         mQueue.add(request);
-
     }
 
     @Override
@@ -242,6 +245,4 @@ public class BartenderActivity extends AppCompatActivity implements BartenderOrd
         super.onBackPressed();
         finishAffinity();
     }
-
-
 }

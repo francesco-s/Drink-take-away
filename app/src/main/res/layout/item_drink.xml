@@ -6,20 +6,40 @@
     android:layout_height="wrap_content"
     android:paddingTop="10dp"
     android:paddingBottom="10dp"
-    >
+    android:background="@drawable/custom_border">
 
+    <!--
+    <ImageView
+        android:id="@+id/drink_type_img"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_weight="0.5"
+        android:layout_gravity="center"
+        android:src="@drawable/ic_beer">
+
+    </ImageView>-->
     <TextView
         android:id="@+id/drink_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:layout_gravity="center"
+        android:textSize="24dp"
+        android:textStyle="bold"
+        android:paddingLeft="40dp"
+        android:text="name"
         />
 
     <TextView
         android:id="@+id/drink_price"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_weight="0.5"
+        android:layout_gravity="center"
+        android:textSize="24dp"
+        android:textStyle="bold"
+        android:paddingLeft="20dp"
+        android:text="price"
         />
 
     <TextView
@@ -30,8 +50,6 @@
         />
 
 
-
-
     <Button
         android:id="@+id/add_button"
         android:layout_width="wrap_content"
@@ -40,5 +58,6 @@
         android:paddingRight="16dp"
         android:textSize="35sp"
         android:text="+"
+        android:background="@drawable/main_button_shape"
         />
 </LinearLayout>

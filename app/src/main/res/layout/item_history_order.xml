@@ -6,16 +6,16 @@
     android:layout_height="wrap_content"
     android:paddingTop="10dp"
     android:paddingBottom="10dp"
-    >
-
-
+    android:background="@drawable/custom_border2">
 
     <TableRow>
         <TextView
             android:id="@+id/local_name_history"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="0.8"
+            android:textSize="16dp"
+            android:textColor="@color/brown_1"
             />
 
 
@@ -23,21 +23,28 @@
             android:id="@+id/order_num_history"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="0.7"
+            android:textSize="16dp"
+            android:textColor="@color/brown_1"
             />
 
         <TextView
             android:id="@+id/timestamp_history"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="0.6"
+            android:textSize="15dp"
+            android:textColor="@color/brown_1"
             />
 
         <TextView
             android:id="@+id/status_history"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="0.6"
+            android:textAlignment="center"
+            android:textSize="16dp"
+            android:textColor="@color/brown_1"
             />
 
     </TableRow>
@@ -49,6 +56,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:text="B"
+            android:textSize="16dp"
+            android:textColor="@color/brown_1"
             />
 
         <TextView
@@ -56,6 +66,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:text="B"
+            android:textSize="16dp"
+            android:textColor="@color/brown_1"
             />
 
         <TextView
@@ -63,7 +76,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            />
+            android:text="B"
+            android:textSize="16dp"
+            android:textColor="@color/brown_1"/>
 
     </TableRow>
 

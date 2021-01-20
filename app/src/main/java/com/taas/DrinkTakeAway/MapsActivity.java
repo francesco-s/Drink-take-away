@@ -89,21 +89,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             @Override
             public void onResponse(ArrayList<Marker> listOfMarker) {
-                Log.i("list", "array" + listOfMarker.size());
-                Log.i("control", "sono in on map ready");
+                Log.i("list", "Merker list size: " + listOfMarker.size());
 
                 String name, type, add;
                 LatLng pos;
                 double lat, lon;
-                Log.i("control", "ho creato le variabili");
+
 
                 if(listOfMarker.isEmpty())
-                {  Log.i("control", "Vuota ktm");  }
+                {  Log.i("control", "Vuota");  }
 
                 //Adding MARKER
                 for(int i=0; i<listOfMarker.size();i++)
                 {
-                    Log.i("control", "sto creando marker");
                     lat = listOfMarker.get(i).getLat();
                     lon = listOfMarker.get(i).getLon();
                     type = listOfMarker.get(i).getType();
@@ -135,14 +133,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
             });
 
-            Log.i("time", "ready "+java.time.Clock.systemUTC().instant());
-
         mMap.setOnMarkerClickListener(this);
         mMap.setInfoWindowAdapter(this);
         mMap.setOnMapClickListener(this);
         setMapCenter();
-        Log.i("crow + list", " la lista contiene i valori " + markers);         //vuote
-        Log.i("crow + list", " la lista contiene i valori " + crowdingList);
 
     } // OnMapReady ends
 
@@ -151,8 +145,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void getCrowding(final CrowdingVolleyResponseListener listener)
     {
         //String url = "http://10.0.2.2:1111/api/v1/getDrinkQuantityToDo/"+id;
-        //String url = "http://192.168.1.157:1111/api/v1/getDrinkQuantityToDo";
-        String url = "http://192.168.1.90:1111/api/v1/getDrinkQuantityToDo";
+        String url = "http://192.168.1.157:1111/api/v1/getDrinkQuantityToDo";
+        //String url = "http://192.168.1.90:1111/api/v1/getDrinkQuantityToDo";
 
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONArray>() {
@@ -195,8 +189,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     {
         Log.i("time", "parse "+java.time.Clock.systemUTC().instant());
         Log.i("parse", "Parsing locali");
-        //String url = "http://10.0.2.2:1111/api/v1/getAllLocals";
-        String url = "http://192.168.1.90:1111/api/v1/getAllLocals";
+        String url = "http://192.168.1.157:1113/api/v1/getAllLocals";
+        //String url = "http://192.168.1.90:1113/api/v1/getAllLocals";
         ArrayList<Marker> al = new ArrayList<>();
 
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
@@ -237,9 +231,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
         mQueue.add(request);
-        Log.i("time", "parse fine"+java.time.Clock.systemUTC().instant());
-
     }    // jsonParseLocali method ends
+
+    //------------------------------------------------------------------------------------------------------------//
 
     private void setMapCenter() {
         //SETTING FOCUS TO CITY CENTER
@@ -264,7 +258,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         TextView selectedMarker = (TextView) findViewById(R.id.local_name);
 
         selectedMarker.setTextSize(TypedValue.COMPLEX_UNIT_SP, 22);
-        selectedMarker.setTextColor(Color.parseColor("#000000"));
+        //selectedMarker.setTextColor(Color.parseColor("#000000"));
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -272,30 +266,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 openMenu(localName);
             }
         });
-
         return false;
     }
 
     @Override
     public void onMapClick(LatLng latLng) {
-
         Toast.makeText(this, "Choose a marker on the map", Toast.LENGTH_LONG).show();
     }
 
     @Override
     public View getInfoWindow(com.google.android.gms.maps.model.Marker marker) {
-        Log.i("infowin", "sono stato cliccato quindi devo apparire");
         String title = marker.getTitle();
         int crow = 0;
         String cCrow = null;
         int waitTime = 0;
 
         View row = getLayoutInflater().inflate(R.layout.custom_infowindow, null);
-        //PRENDIAMO DAL LAYOUT LA TEXT VIEW CON ID ADDRESS
+
         TextView name = (TextView) row.findViewById(R.id.name);
-        //PRENDIAMO DAL LAYOUT LA TEXT VIEW CON ID ADDRESS
+
         TextView address = (TextView) row.findViewById(R.id.address);
-        //PRENDIAMO DAL LAYOUT LA TEXT VIEW CON ID CROWDING
+
         TextView crowding = (TextView) row.findViewById(R.id.crowding);
         TextView wait = row.findViewById(R.id.waiting_time);
 
@@ -310,12 +301,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Log.i("val crow", "val infow " + markers.get(i).getCrowding());
                 //Log.i("val info", "lettura " + crowdingList.get(markers.get(i).getId()-1).getSum());
 
-                //SETTING COLORI TESTO/INFOWINDOW
+                //SETTING TEXT/INFOWINDOW COLOR
                 String cName = markers.get(i).getName() + " ";
-                //Log.i("ciclo", "val="+cont);
                 String cAdd = markers.get(i).getAddress() + " ";
 
-                //ASSEGNAZIONE TESTO DA VISUALIZZARE
+                //SETTING TEXTVIEW CONTENT
                 name = setTextAndColor(name, cName, " Name");
 
                 address = setTextAndColor(address, cAdd, " Address");
@@ -325,11 +315,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 waitTime = getWaitInfoWindow(crow);
                 setTextAndColor(wait, String.valueOf(waitTime), " Waiting time");
 
-
                 row.setBackgroundColor(Color.parseColor("#fbb324"));
             }
         }
-        Log.i("infowin", "il mio lavoro è finito");
 
         return row;
     }
@@ -376,7 +364,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public int setCustomIcon(String type)
     {
-        int path = R.drawable.ic_cocktail;         //INIZIALIZZAZIONE PER NON AVERE ERRORI A RUNTIME
+        int path = R.drawable.ic_cocktail;         //INIZIALIZATION TO AVOID RUNTIME ERRORS
 
         switch (type)
         {

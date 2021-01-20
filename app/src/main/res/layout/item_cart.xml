@@ -6,30 +6,43 @@
     android:layout_height="wrap_content"
     android:paddingTop="10dp"
     android:paddingBottom="10dp"
-    >
+    android:background="@drawable/custom_border">
 
     <TextView
         android:id="@+id/drink_name_cart"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:layout_gravity="center"
+        android:textSize="24dp"
+        android:textStyle="bold"
+        android:paddingLeft="15dp"
+        android:text="name"
         />
 
     <TextView
         android:id="@+id/drink_price_cart"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_weight="0.5"
+        android:layout_gravity="center"
+        android:textSize="24dp"
+        android:paddingLeft="10dp"
+        android:textStyle="bold"
+        android:text="price"
         />
 
     <TextView
         android:id="@+id/drink_numerosity"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_weight="0.3"
+        android:layout_gravity="center"
+        android:textSize="24dp"
+        android:paddingLeft="5dp"
+        android:textStyle="bold"
+        android:text="20"
         />
-
-
 
     <Button
         android:id="@+id/minus_button"
