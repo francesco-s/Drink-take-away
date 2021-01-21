@@ -38,14 +38,16 @@ import java.util.Map;
 
 public class BartenderActivity extends AppCompatActivity implements BartenderOrderAdapter.onDrinkListenerCart {
 
-    final String serverAddress = "http://192.168.1.157:1111/api/v1/";
-    //final String serverAddress = "http://192.168.1.90:1111/api/v1/";
+    //final String serverAddress = "http://192.168.1.157:1111/api/v1/";
+    final String serverAddress = "http://192.168.1.90:1111/api/v1/";
 
 
     Context context;
     RecyclerView rvBartenderHistory;
     private RequestQueue mQueue;
     String accessToken;
+
+    BartenderOrderAdapter adapter;
 
     private List<BartenderOrderEntity> bartenderOrderEntityList;
 
@@ -61,7 +63,6 @@ public class BartenderActivity extends AppCompatActivity implements BartenderOrd
         context = this;
 
         mQueue = Volley.newRequestQueue(this);
-        bartenderOrderEntityList = new ArrayList<>();
 
         rvBartenderHistory = (RecyclerView) findViewById(R.id.recyclermenuBartender);
 
@@ -70,14 +71,15 @@ public class BartenderActivity extends AppCompatActivity implements BartenderOrd
         accessToken  = preferences.getString("token",null);//second parameter default value.
 
 
-        getAllBartenderOrders(localName);
+        getAllBartenderOrders();
     }
 
 
 
 
-    private void getAllBartenderOrders(String email)
+    private void getAllBartenderOrders()
     {
+        bartenderOrderEntityList = new ArrayList<>();
 
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, serverAddress + "localOrders?nameLocale=" + localName , null, new Response.Listener<JSONArray>() {
             @Override
@@ -103,7 +105,7 @@ public class BartenderActivity extends AppCompatActivity implements BartenderOrd
                     }
 
                     rvBartenderHistory.addItemDecoration(new DividerItemDecoration(context, LinearLayout.VERTICAL));
-                    BartenderOrderAdapter adapter = new BartenderOrderAdapter(bartenderOrderEntityList, (BartenderOrderAdapter.onDrinkListenerCart) context, localName);
+                    adapter = new BartenderOrderAdapter(bartenderOrderEntityList, (BartenderOrderAdapter.onDrinkListenerCart) context, localName);
                     // Attach the adapter to the recyclerview to populate items
                     rvBartenderHistory.setAdapter(adapter);
 
@@ -132,8 +134,9 @@ public class BartenderActivity extends AppCompatActivity implements BartenderOrd
     }
 
     @Override
-    public void onCompletedButtonClick(String orderNumber, String localName, String email) {
+    public void onCompletedButtonClick(String orderNumber, String localName, String email, int pos) {
         DMLreq(orderNumber, "completed");
+        getAllBartenderOrders();
         saveOrderToDB2(Integer.parseInt(orderNumber));
     }
 
@@ -201,14 +204,12 @@ public class BartenderActivity extends AppCompatActivity implements BartenderOrd
                         params.put(String.valueOf(i), innerParams);
                     }
 
-                    String address = "http://192.168.1.157:1112/api/v1/";
-                    //String address = "http://192.168.1.90:1112/api/v1/";
+                    //String address = "http://192.168.1.157:1112/api/v1/";
+                    String address = "http://192.168.1.90:1112/api/v1/";
                     JsonObjectRequest request2 = new JsonObjectRequest(address+ "orderHistory/saveOrder", params, new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
                             String r  = response.toString();
-
-                            int a=0;
                         }
                     }, new Response.ErrorListener() {
                         @Override
