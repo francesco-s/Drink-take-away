@@ -36,8 +36,8 @@ import java.util.Map;
 
 public class OrdersHistory extends AppCompatActivity implements HistoryOrderAdapter.onDrinkListenerCart{
 
-    final String serverAddress = "http://192.168.1.157:1111/api/v1/";
-    //final String serverAddress = "http://192.168.1.90:1111/api/v1/";
+    //final String serverAddress = "http://192.168.1.157:1111/api/v1/";
+    final String serverAddress = "http://192.168.1.90:1111/api/v1/";
 
     private String email;
     private RequestQueue mQueue;

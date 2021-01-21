@@ -73,8 +73,8 @@ public class ShoppingCart extends AppCompatActivity implements CartAdapter.onDri
     //ENVIRONMENT PRODUCTION IS USED WHEN THE APP IS READY FOR THE RELEASE
 
 
-    //final String serverAddress = "http://192.168.1.90:1111/api/v1/saveOrder";
-    final String serverAddress = "http://192.168.1.157:1111/api/v1/saveOrder";
+    final String serverAddress = "http://192.168.1.90:1111/api/v1/saveOrder";
+    //final String serverAddress = "http://192.168.1.157:1111/api/v1/saveOrder";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
