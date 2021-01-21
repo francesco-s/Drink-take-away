@@ -89,7 +89,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             @Override
             public void onResponse(ArrayList<Marker> listOfMarker) {
-                Log.i("list", "Merker list size: " + listOfMarker.size());
+                Log.i("list", "Marker list size: " + listOfMarker.size());
 
                 String name, type, add;
                 LatLng pos;
