@@ -336,7 +336,7 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.menuInfoC:{
-                Toast.makeText(context, "Hai cliccato info cliente", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Customer Info pressed", Toast.LENGTH_SHORT).show();
                 return true;
             }
             case R.id.menuOrderHistory:{
@@ -346,11 +346,11 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
                 return true;
             }
             case R.id.menuSupport:{
-                Toast.makeText(context, "Contatta francescosannicola1997@gmail.com", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Contact support_drinktakeaway@dta.it", Toast.LENGTH_SHORT).show();
                 return true;
             }
             case R.id.menuLogout:{
-                Toast.makeText(context, "Hai cliccato logout", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Logout pressed", Toast.LENGTH_SHORT).show();
 
                 if (isLoggedInGoogle){
                     GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build();

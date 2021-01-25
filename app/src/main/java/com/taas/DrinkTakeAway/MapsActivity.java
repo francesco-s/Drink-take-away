@@ -52,6 +52,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Button button;
     private RequestQueue mQueue;
     private RequestQueue crowQueue;
+    //final String ipAddress = "http://192.168.1.157";
+    final String ipAddress = "http://192.168.1.90";
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -145,8 +147,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void getCrowding(final CrowdingVolleyResponseListener listener)
     {
         //String url = "http://10.0.2.2:1111/api/v1/getDrinkQuantityToDo/"+id;
-        //String url = "http://192.168.1.157:1111/api/v1/getDrinkQuantityToDo";
-        String url = "http://192.168.1.90:1111/api/v1/getDrinkQuantityToDo";
+        String url = ipAddress + ":1111/api/v1/getDrinkQuantityToDo";
 
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONArray>() {
@@ -189,8 +190,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     {
         Log.i("time", "parse "+java.time.Clock.systemUTC().instant());
         Log.i("parse", "Parsing locali");
-        //String url = "http://192.168.1.157:1113/api/v1/getAllLocals";
-        String url = "http://192.168.1.90:1113/api/v1/getAllLocals";
+        String url = ipAddress + ":1113/api/v1/getAllLocals";
+
         ArrayList<Marker> al = new ArrayList<>();
 
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
