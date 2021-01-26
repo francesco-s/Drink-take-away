@@ -52,6 +52,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Button button;
     private RequestQueue mQueue;
     private RequestQueue crowQueue;
+    final String ipAddress = "http://192.168.49.2:30001/api/v1/";
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -128,8 +129,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     {
                         Log.i("crow", "i val della lista sono " + d.getSum() + " " + d.getId_locale());     //Valori ok
                     }
-                    Log.i("crow", "la lista è " + crowdingList);
-                    Log.i("crow", "la lista è " + cDto);
+
                 }
             });
 
@@ -144,8 +144,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void getCrowding(final CrowdingVolleyResponseListener listener)
     {
-        //String url = "http://10.0.2.2:1111/api/v1/getDrinkQuantityToDo/"+id;
-        String url = "http://192.168.1.157:1111/api/v1/getDrinkQuantityToDo";
+        String url =  ipAddress + "core/get_drink_quantity_to_Do";
         //String url = "http://192.168.1.90:1111/api/v1/getDrinkQuantityToDo";
 
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
@@ -187,9 +186,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void jsonParseLocali(final VolleyResponseListener listener)
     {
-        Log.i("time", "parse "+java.time.Clock.systemUTC().instant());
-        Log.i("parse", "Parsing locali");
-        String url = "http://192.168.1.157:1113/api/v1/getAllLocals";
+
+        String url = ipAddress + "local/get_all_locals";
         //String url = "http://192.168.1.90:1113/api/v1/getAllLocals";
         ArrayList<Marker> al = new ArrayList<>();
 
@@ -298,8 +296,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 catch (IndexOutOfBoundsException e)
                 {   crow = 0;   }
                 cCrow = setCrowdingInfoWinfow(crow);
-                Log.i("val crow", "val infow " + markers.get(i).getCrowding());
-                //Log.i("val info", "lettura " + crowdingList.get(markers.get(i).getId()-1).getSum());
 
                 //SETTING TEXT/INFOWINDOW COLOR
                 String cName = markers.get(i).getName() + " ";
@@ -328,7 +324,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     } //FINE getInfoContent
 
 
-    //ANDIAMO A DEFINIRE LA PROCEDURA PER APRIRE IL MENU
     public void openMenu(String localName) {
         Intent intent = new Intent(this, Home.class);
         intent.putExtra("name", localName);

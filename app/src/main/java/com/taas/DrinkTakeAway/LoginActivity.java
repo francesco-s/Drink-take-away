@@ -55,8 +55,8 @@ public class LoginActivity extends AppCompatActivity {
     //String facebookAuthUrl = "http://192.168.1.90:7777/oauth/facebook";
 
 
-    String googleAuthUrl = "http://192.168.1.157:7777/oauth/google";
-    String facebookAuthUrl = "http://192.168.1.157:7777/oauth/facebook";
+    String googleAuthUrl = "http://192.168.49.2:30001/oauth/google";
+    String facebookAuthUrl = "http://192.168.49.2:30001/oauth/facebook";
 
 
     GoogleSignInClient mGoogleSignInClient;

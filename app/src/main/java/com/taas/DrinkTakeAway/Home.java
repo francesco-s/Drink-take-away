@@ -67,7 +67,7 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
     TextView textViewMenuTopUtente;
     TextView textViewMenuTopEmail;
 
-    String apiServerIp = "http://192.168.1.157:1111/api/v1/";
+    String apiServerIp = "http://192.168.49.2:30001/api/v1/core/";
     //String apiServerIp = "http://192.168.1.90:1111/api/v1/";
 
     
@@ -297,8 +297,6 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
     {
         switch (item.getItemId()) {
             case R.id.cart: {
-                Toast.makeText(context, "Cart pressed", Toast.LENGTH_SHORT).show();
-
                 Intent intent = new Intent(context, ShoppingCart.class);
                 bundle.putSerializable("order", ordine);
                 bundle.putSerializable("localID", localId);
@@ -336,7 +334,7 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.menuInfoC:{
-                Toast.makeText(context, "Hai cliccato info cliente", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Customer info pressed", Toast.LENGTH_SHORT).show();
                 return true;
             }
             case R.id.menuOrderHistory:{
@@ -346,11 +344,11 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
                 return true;
             }
             case R.id.menuSupport:{
-                Toast.makeText(context, "Contatta francescosannicola1997@gmail.com", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Contact drinktakeaway_support@dta.it", Toast.LENGTH_SHORT).show();
                 return true;
             }
             case R.id.menuLogout:{
-                Toast.makeText(context, "Hai cliccato logout", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Logout pressed", Toast.LENGTH_SHORT).show();
 
                 if (isLoggedInGoogle){
                     GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build();
@@ -462,7 +460,7 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
         {
             case "All":
                 //url = "http://192.168.1.90:1111/api/v1/menu?nameLocale=" + localName;
-                url = "http://192.168.1.157:1111/api/v1/menu?nameLocale=" + localName;
+                url = apiServerIp + "menu?nameLocale=" + localName;
                 break;
             case "Beers":
                 url = apiServerIp + "specificdrinktype?nameLocale=" + localName + "&typeBevanda=beer";

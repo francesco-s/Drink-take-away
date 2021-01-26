@@ -67,14 +67,14 @@ public class ShoppingCart extends AppCompatActivity implements CartAdapter.onDri
     private int PAYPAL_REQ_CODE = 12;
     //public static final String PAYPAL_CLIENT_ID = "Aav06doww9oKl6daarVYc2Uzvlm5w_FpkWS_Uh4QWCLT3Y3X3J5EWSoXJUJMBJkqrd-tnlYZ2SpBfJcQ";
     private static PayPalConfiguration paypalConfig = new PayPalConfiguration()
-            .environment(PayPalConfiguration.ENVIRONMENT_SANDBOX)
+            .environment(PayPalConfiguration.ENVIRONMENT_NO_NETWORK)
             .clientId(PayPalClientIDConfig.PAYPAL_CLIENT_ID);
     //WE USE ENVIRONMENT SANDBOX, TEST PURPOSES ONLY
     //ENVIRONMENT PRODUCTION IS USED WHEN THE APP IS READY FOR THE RELEASE
 
 
     //final String serverAddress = "http://192.168.1.90:1111/api/v1/saveOrder";
-    final String serverAddress = "http://192.168.1.157:1111/api/v1/saveOrder";
+    final String serverAddress = "http://192.168.49.2:30001/api/v1/core/save_order";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

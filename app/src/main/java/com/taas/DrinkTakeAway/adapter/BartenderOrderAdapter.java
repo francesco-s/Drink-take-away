@@ -130,7 +130,7 @@ public class BartenderOrderAdapter extends
             buttonCompleted.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mOnDrinkListenerBartender.onCompletedButtonClick(orderNumberTextView.getText().toString().replaceAll("\n Order#", "").replaceAll("\n", ""), localName, emailTextView.getText().toString());
+                    mOnDrinkListenerBartender.onCompletedButtonClick(orderNumberTextView.getText().toString().replaceAll("\n Order#", "").replaceAll("\n", ""), localName, emailTextView.getText().toString(), getAdapterPosition());
                    // mOnDrinkListenerBartender.saveOrdertoSecondService(localName, nameTextView.getText().toString(), orderNumberTextView.getText().toString(), emailTextView.getText().toString(),numerosityTextView.getText().toString());
                 }
             });
@@ -154,7 +154,7 @@ public class BartenderOrderAdapter extends
     public interface onDrinkListenerCart{
         //void onDrinkClickGetName (String name);
         //void onMinusButtonClickGetDrink(String name, String price, String numerosity, int pos);
-        void onCompletedButtonClick(String orderNumber, String localName, String email);
+        void onCompletedButtonClick(String orderNumber, String localName, String email, int pos);
         void onPreparingButtonClick(String orderNumber);
     }
 
