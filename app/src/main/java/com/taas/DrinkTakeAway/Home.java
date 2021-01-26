@@ -461,8 +461,8 @@ public class Home extends AppCompatActivity implements DrinkAdapter.onDrinkListe
         switch (buttonName)
         {
             case "All":
-                //url = "http://192.168.1.90:1111/api/v1/menu?nameLocale=" + localName;
-                url = "http://192.168.1.157:1111/api/v1/menu?nameLocale=" + localName;
+                url = "http://192.168.1.90:1111/api/v1/menu?nameLocale=" + localName;
+                //url = "http://192.168.1.157:1111/api/v1/menu?nameLocale=" + localName;
                 break;
             case "Beers":
                 url = apiServerIp + "specificdrinktype?nameLocale=" + localName + "&typeBevanda=beer";
